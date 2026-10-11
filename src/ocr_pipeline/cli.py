@@ -19,14 +19,29 @@ logger = logging.getLogger(__name__)
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Run OCR on image and PDF files, or folders of them.")
-    parser.add_argument("inputs", nargs="+", help="Image or PDF files, or folders (top level only).")
+    parser = argparse.ArgumentParser(
+        description="Run OCR on image and PDF files, or folders of them."
+    )
+    parser.add_argument(
+        "inputs", nargs="+", help="Image or PDF files, or folders (top level only)."
+    )
     parser.add_argument("--output", required=True, help="Output path for results.")
-    parser.add_argument("--format", choices=["json", "csv"], default="json", help="Export format.")
-    parser.add_argument("--dpi", type=int, default=200, help="Rasterization DPI for PDF pages.")
+    parser.add_argument(
+        "--format", choices=["json", "csv"], default="json", help="Export format."
+    )
+    parser.add_argument(
+        "--dpi", type=int, default=200, help="Rasterization DPI for PDF pages."
+    )
     # "local" is the name the free local engine will register under (S2.2.2).
-    parser.add_argument("--backend", default="local", help="OCR backend to use (default: local).")
-    parser.add_argument("--threshold", type=int, default=128, help="Binarization threshold for preprocessing.")
+    parser.add_argument(
+        "--backend", default="local", help="OCR backend to use (default: local)."
+    )
+    parser.add_argument(
+        "--threshold",
+        type=int,
+        default=128,
+        help="Binarization threshold for preprocessing.",
+    )
     return parser
 
 
@@ -50,7 +65,10 @@ def main(argv: list[str] | None = None) -> int:
     # only empty folders); bad files and pages come back as page results.
     try:
         results = run_pipeline(
-            [Path(path) for path in args.inputs], backend, dpi=args.dpi, threshold=args.threshold
+            [Path(path) for path in args.inputs],
+            backend,
+            dpi=args.dpi,
+            threshold=args.threshold,
         )
     except (FileNotFoundError, ValueError) as error:
         parser.error(str(error))
@@ -62,7 +80,9 @@ def main(argv: list[str] | None = None) -> int:
         export_to_csv(results, output_path)
 
     failed = sum(1 for result in results if result.error)
-    logger.info("Wrote %d pages to %s (%d with errors)", len(results), output_path, failed)
+    logger.info(
+        "Wrote %d pages to %s (%d with errors)", len(results), output_path, failed
+    )
     return 1 if failed else 0
 
 

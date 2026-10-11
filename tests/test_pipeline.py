@@ -6,9 +6,9 @@ from pathlib import Path
 
 import fitz
 import pytest
+from fakes import FakeBackend
 from PIL import Image
 
-from fakes import FakeBackend
 from ocr_pipeline.models import Line
 from ocr_pipeline.pipeline import run_pipeline
 
@@ -46,7 +46,10 @@ def test_returns_one_result_per_page_in_input_order(tmp_path: Path) -> None:
     ]
     assert all(r.error is None for r in results)
     assert results[0].text == "hello\nworld"
-    assert results[0].lines == [Line(text="hello", confidence=0.9), Line(text="world", confidence=0.8)]
+    assert results[0].lines == [
+        Line(text="hello", confidence=0.9),
+        Line(text="world", confidence=0.8),
+    ]
 
 
 def test_corrupt_file_is_reported_and_good_pages_still_run(
@@ -59,7 +62,11 @@ def test_corrupt_file_is_reported_and_good_pages_still_run(
     with caplog.at_level(logging.WARNING, logger="ocr_pipeline.pipeline"):
         results = run_pipeline([good_before, corrupt, good_after], FakeBackend())
 
-    assert [r.source_file for r in results] == [str(good_before), str(corrupt), str(good_after)]
+    assert [r.source_file for r in results] == [
+        str(good_before),
+        str(corrupt),
+        str(good_after),
+    ]
     assert results[0].error is None and results[0].text == "hello\nworld"
     assert results[2].error is None and results[2].text == "hello\nworld"
 
@@ -68,7 +75,8 @@ def test_corrupt_file_is_reported_and_good_pages_still_run(
     assert bad.text == ""
     assert bad.lines == []
     assert any(
-        r.levelno == logging.WARNING and "broken.png" in r.getMessage() for r in caplog.records
+        r.levelno == logging.WARNING and "broken.png" in r.getMessage()
+        for r in caplog.records
     )
 
 

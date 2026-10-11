@@ -5,7 +5,9 @@ from ocr_pipeline.models import Line, PageResult
 
 def test_page_result_holds_all_fields() -> None:
     lines = [Line(text="Hello", confidence=0.98), Line(text="world", confidence=0.91)]
-    result = PageResult(source_file="scan.pdf", page=2, text="Hello\nworld", lines=lines)
+    result = PageResult(
+        source_file="scan.pdf", page=2, text="Hello\nworld", lines=lines
+    )
 
     assert result.source_file == "scan.pdf"
     assert result.page == 2
@@ -23,7 +25,9 @@ def test_page_with_no_text_has_empty_text_and_lines() -> None:
 
 
 def test_failed_page_holds_error_and_empty_text() -> None:
-    result = PageResult(source_file="broken.png", page=1, error="cannot identify image file")
+    result = PageResult(
+        source_file="broken.png", page=1, error="cannot identify image file"
+    )
 
     assert result.error == "cannot identify image file"
     assert result.text == ""

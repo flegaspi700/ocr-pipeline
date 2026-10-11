@@ -10,11 +10,15 @@ def binarize(image: Image.Image, threshold: int = 128) -> Image.Image:
     return gray.point(lambda p: 255 if p >= threshold else 0, mode="1").convert("L")
 
 
-def resize_to_fit(image: Image.Image, max_width: int = 2200, max_height: int = 3200) -> Image.Image:
+def resize_to_fit(
+    image: Image.Image, max_width: int = 2200, max_height: int = 3200
+) -> Image.Image:
     width, height = image.size
     ratio = min(max_width / width, max_height / height, 1.0)
     if ratio < 1.0:
-        return image.resize((int(width * ratio), int(height * ratio)), Image.Resampling.LANCZOS)
+        return image.resize(
+            (int(width * ratio), int(height * ratio)), Image.Resampling.LANCZOS
+        )
     return image
 
 

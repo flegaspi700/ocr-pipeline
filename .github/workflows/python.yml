@@ -19,6 +19,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e .
-          pip install pytest
+          # Ruff pinned so CI formats exactly like the local venv; bump both together.
+          pip install pytest ruff==0.17.0
       - name: Run tests
         run: pytest
+      - name: Lint
+        run: ruff check .
+      - name: Check formatting
+        run: ruff format --check .

@@ -30,16 +30,15 @@ Existing stack, recorded as found in the repo (see `05-decisions-log.md` →
 | Tool | Purpose |
 |---|---|
 | <editor> | Primary editor |
-| <formatter> | Formatting — not set up yet |
-| <linter / type checker> | Linting and type checks — not set up yet |
+| Ruff | Formatting (`ruff format`, Black-compatible) and linting (`ruff check`: defaults + import sorting); config in `pyproject.toml` → `[tool.ruff]`. No type checker yet |
 | pytest | Tests (`tests/`, a fake backend registered with `monkeypatch`) |
 | <coverage tool> | Coverage report (a hint, no target %) — not set up yet |
 | <dependency audit tool, e.g. pip-audit> | Known vulnerabilities in dependencies (`14-security.md`) — not set up yet |
 | venv (`.venv/`, git-ignored) | Dependency isolation |
-| GitHub Actions (`.github/workflows/python.yml`) | CI: `pip install -e .` + `pytest` on windows-latest, Python 3.13, on push/PR to `main` |
+| GitHub Actions (`.github/workflows/python.yml`) | CI: `pip install -e .`, then `pytest`, `ruff check .` and `ruff format --check .` on windows-latest, Python 3.13, on push/PR to `main` |
 
 **Local setup (verified 2026-10-10, S4.1.1):** `python -m venv .venv` with
-Python 3.13, then `pip install -e .` and `pip install pytest` inside it. No
+Python 3.13, then `pip install -e .` and `pip install pytest ruff==0.17.0` inside it. No
 machine setting was needed: no pip config, proxy, or custom certificates.
 The earlier `SSLV3_ALERT_HANDSHAKE_FAILURE` from `files.pythonhosted.org`
 (`review_notes.md`) no longer reproduces, even with `--no-cache-dir`; it
@@ -56,7 +55,7 @@ PyMuPDF>=1.22.0
 
 (`requests` was removed with the Baidu backend in S1.1.2.)
 
-Dev: `pytest` (installed separately in CI; not declared in `pyproject.toml`).
+Dev: `pytest` and `ruff==0.17.0` (pinned so local and CI format the same), installed separately locally and in CI; neither is declared in `pyproject.toml`.
 
 ## Deferred / not needed yet
 

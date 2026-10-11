@@ -121,17 +121,32 @@ needs a dependency that conflicts with these.
 
 ---
 
-## YYYY-MM-DD — Formatter, linter and test runner
+## 2026-10-11 — Formatter, linter and test runner
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Context:** Tooling needs to be fixed early so AI-generated code stays
-consistent between sessions. Follows from the language choice above.
+consistent between sessions. Follows from the language choice above. Test
+runner was already pytest; formatter and linter were the last Phase 1 task.
 
-**Decision:** _Partly decided — test runner is pytest (already in use).
-Formatter and linter still pending._
+**Options considered:**
 
-**Why:** _Fill in once chosen._
+| Option | Pros | Cons | Cost |
+|---|---|---|---|
+| A: Ruff for formatting and linting | One dev tool, one `pyproject.toml` section; very fast; Black-compatible formatting; widely used, maintained by Astral | Younger than Black/Flake8; some niche lint rules missing | $0 |
+| B: Black + Flake8 | Long-established, widely documented | Two tools and two configs (Flake8 needs its own file or a plugin); slower | $0 |
+| C: Ruff lint only, no formatter | Least setup | Style drifts between sessions — the reason this decision exists | $0 |
+
+**Decision:** Option A — Ruff (`ruff format`, `ruff check`). pytest stays
+the test runner. Config: `target-version = "py311"`, default line length
+(88), default lint rules plus import sorting (`I`). Ruff verified on PyPI
+(publisher Astral Software, 0.17.0) before installing. CI runs `ruff check .`
+and `ruff format --check .` after the tests, with Ruff pinned to 0.17.0 so
+local and CI formatting match.
+
+**Why:** The smallest setup that both formats and lints, which keeps
+AI-written code consistent (`00-vision.md` → readable, extensible code).
+Trade-off accepted: relying on a younger tool, low risk for a trial.
 
 ---
 

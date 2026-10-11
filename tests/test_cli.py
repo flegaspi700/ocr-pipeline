@@ -7,9 +7,9 @@ from pathlib import Path
 
 import fitz
 import pytest
+from fakes import FakeBackend
 from PIL import Image
 
-from fakes import FakeBackend
 from ocr_pipeline import backend, cli
 from ocr_pipeline.models import Line
 
@@ -36,19 +36,25 @@ def fake_registry(monkeypatch: pytest.MonkeyPatch) -> None:
         {
             "fake": FakeBackend,
             "fails-on-2nd": lambda: FakeBackend(fail_on=(2,)),
-            "secret": lambda: FakeBackend(lines=[Line(text="SECRET-DOC-TEXT", confidence=1.0)]),
+            "secret": lambda: FakeBackend(
+                lines=[Line(text="SECRET-DOC-TEXT", confidence=1.0)]
+            ),
         },
     )
 
 
-def test_writes_json_via_run_pipeline_for_files_and_folders(tmp_path: Path, fake_registry: None) -> None:
+def test_writes_json_via_run_pipeline_for_files_and_folders(
+    tmp_path: Path, fake_registry: None
+) -> None:
     image = make_image(tmp_path / "single.png")
     folder = tmp_path / "batch"
     folder.mkdir()
     make_pdf(folder / "doc.pdf", pages=2)
     output = tmp_path / "out" / "results.json"
 
-    code = cli.main([str(image), str(folder), "--output", str(output), "--backend", "fake"])
+    code = cli.main(
+        [str(image), str(folder), "--output", str(output), "--backend", "fake"]
+    )
 
     payload = json.loads(output.read_text(encoding="utf-8"))
     assert [(Path(p["source_file"]).name, p["page"]) for p in payload] == [
@@ -64,7 +70,9 @@ def test_writes_csv_with_one_row_per_page(tmp_path: Path, fake_registry: None) -
     pdf = make_pdf(tmp_path / "doc.pdf", pages=3)
     output = tmp_path / "results.csv"
 
-    code = cli.main([str(pdf), "--output", str(output), "--format", "csv", "--backend", "fake"])
+    code = cli.main(
+        [str(pdf), "--output", str(output), "--format", "csv", "--backend", "fake"]
+    )
 
     with open(output, encoding="utf-8-sig", newline="") as handle:
         rows = list(csv.DictReader(handle))
@@ -79,12 +87,21 @@ def test_exit_code_1_when_any_page_has_an_error(
     output = tmp_path / "results.json"
 
     with caplog.at_level(logging.INFO):
-        code = cli.main([str(pdf), "--output", str(output), "--backend", "fails-on-2nd"])
+        code = cli.main(
+            [str(pdf), "--output", str(output), "--backend", "fails-on-2nd"]
+        )
 
     assert code == 1
     assert output.is_file()
-    summary = [r for r in caplog.records if r.name == "ocr_pipeline.cli" and r.levelno == logging.INFO]
-    assert any("3 pages" in r.getMessage() and "1 with errors" in r.getMessage() for r in summary)
+    summary = [
+        r
+        for r in caplog.records
+        if r.name == "ocr_pipeline.cli" and r.levelno == logging.INFO
+    ]
+    assert any(
+        "3 pages" in r.getMessage() and "1 with errors" in r.getMessage()
+        for r in summary
+    )
 
 
 def test_exit_code_0_and_summary_when_all_pages_succeed(
@@ -93,11 +110,20 @@ def test_exit_code_0_and_summary_when_all_pages_succeed(
     image = make_image(tmp_path / "page.png")
 
     with caplog.at_level(logging.INFO):
-        code = cli.main([str(image), "--output", str(tmp_path / "r.json"), "--backend", "fake"])
+        code = cli.main(
+            [str(image), "--output", str(tmp_path / "r.json"), "--backend", "fake"]
+        )
 
     assert code == 0
-    summary = [r for r in caplog.records if r.name == "ocr_pipeline.cli" and r.levelno == logging.INFO]
-    assert any("1 pages" in r.getMessage() and "0 with errors" in r.getMessage() for r in summary)
+    summary = [
+        r
+        for r in caplog.records
+        if r.name == "ocr_pipeline.cli" and r.levelno == logging.INFO
+    ]
+    assert any(
+        "1 pages" in r.getMessage() and "0 with errors" in r.getMessage()
+        for r in summary
+    )
 
 
 def test_no_inputs_is_a_usage_error(tmp_path: Path, fake_registry: None) -> None:
@@ -113,7 +139,9 @@ def test_unknown_backend_is_a_usage_error_listing_backends(
     image = make_image(tmp_path / "page.png")
 
     with pytest.raises(SystemExit) as exit_info:
-        cli.main([str(image), "--output", str(tmp_path / "r.json"), "--backend", "nope"])
+        cli.main(
+            [str(image), "--output", str(tmp_path / "r.json"), "--backend", "nope"]
+        )
 
     assert exit_info.value.code == 2
     stderr = capsys.readouterr().err
@@ -125,7 +153,15 @@ def test_missing_input_path_is_a_usage_error(
     tmp_path: Path, fake_registry: None, capsys: pytest.CaptureFixture[str]
 ) -> None:
     with pytest.raises(SystemExit) as exit_info:
-        cli.main([str(tmp_path / "missing.png"), "--output", str(tmp_path / "r.json"), "--backend", "fake"])
+        cli.main(
+            [
+                str(tmp_path / "missing.png"),
+                "--output",
+                str(tmp_path / "r.json"),
+                "--backend",
+                "fake",
+            ]
+        )
 
     assert exit_info.value.code == 2
     assert "missing.png" in capsys.readouterr().err
@@ -140,9 +176,15 @@ def test_output_goes_through_logging_and_text_never_above_debug(
     image = make_image(tmp_path / "page.png")
 
     with caplog.at_level(logging.DEBUG):
-        cli.main([str(image), "--output", str(tmp_path / "r.json"), "--backend", "secret"])
+        cli.main(
+            [str(image), "--output", str(tmp_path / "r.json"), "--backend", "secret"]
+        )
 
     assert capsys.readouterr().out == ""
     assert caplog.records, "expected the run to log something"
-    leaked = [r for r in caplog.records if r.levelno > logging.DEBUG and "SECRET-DOC-TEXT" in r.getMessage()]
+    leaked = [
+        r
+        for r in caplog.records
+        if r.levelno > logging.DEBUG and "SECRET-DOC-TEXT" in r.getMessage()
+    ]
     assert leaked == []
