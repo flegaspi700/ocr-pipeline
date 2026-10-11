@@ -38,6 +38,8 @@ from `PageResult`, S1.2.2 CLI calls `run_pipeline()`).
 API is planned? Follow-up: PyMuPDF prints "`fitz` API is deprecated, use
 `import pymupdf`" on import.
 
+---
+
 ## 2026-10-10 — Session wrap-up: breakdown, F4.1 done, Phase 1 started
 
 **Worked on:** `/breakdown`, S4.1.1, S4.1.2 (F4.1 done), DoD report format
