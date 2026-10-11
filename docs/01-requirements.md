@@ -110,12 +110,12 @@ at each phase end (`07-testing-checklist.md`).
 | ID | Title | Type | Phase | Status |
 |---|---|---|---|---|
 | E1 | Batch OCR to structured output | Epic | 1 | Backlog |
-| F1.1 | Clean pipeline core | Feature | 1 | Ready |
-| S1.1.1 | Typed page result | Story | 1 | Ready |
-| S1.1.2 | Backend registry; Baidu removed | Story | 1 | Ready |
+| F1.1 | Clean pipeline core | Feature | 1 | In progress |
+| S1.1.1 | Typed page result | Story | 1 | Done |
+| S1.1.2 | Backend registry; Baidu removed | Story | 1 | In progress |
 | S1.1.3 | Pages loaded one at a time | Story | 1 | Dropped |
-| S1.1.4 | Folder inputs expand to their files | Story | 1 | Ready |
-| S1.1.5 | `run_pipeline()` with skip-and-report | Story | 1 | Ready |
+| S1.1.4 | Folder inputs expand to their files | Story | 1 | In progress |
+| S1.1.5 | `run_pipeline()` with skip-and-report | Story | 1 | In progress |
 | F1.2 | Export and CLI on the core | Feature | 1 | Ready |
 | S1.2.1 | JSON and CSV from page results | Story | 1 | Ready |
 | S1.2.2 | CLI is a thin caller of `run_pipeline()` | Story | 1 | Ready |
@@ -166,15 +166,15 @@ between components, so the interface is self-documenting
 (`06-coding-conventions.md` → Typing).
 
 **Component:** `src/ocr_pipeline/models.py`
-**Status:** Ready
+**Status:** Done
 
 **Acceptance criteria:**
-- [ ] Given OCR output for one page, when a `PageResult` is built, then it
+- [x] Given OCR output for one page, when a `PageResult` is built, then it
       holds `source_file`, `page` (1-based), `text`, `lines` (each with
       `text` and `confidence`) and `error`
-- [ ] Given a page with no text, when it is built, then `text == ""` and
+- [x] Given a page with no text, when it is built, then `text == ""` and
       `lines == []` (not `None`)
-- [ ] Given a failed page, when it is built, then `error` holds the message
+- [x] Given a failed page, when it is built, then `error` holds the message
       and `text` is empty
 
 #### S1.1.2 — Backend registry; Baidu removed
@@ -184,7 +184,7 @@ registry, so that adding an engine touches only the backend module and a
 CLI option (`00-vision.md` → Success looks like).
 
 **Component:** `src/ocr_pipeline/backend.py`
-**Status:** Ready
+**Status:** In progress
 
 **Acceptance criteria:**
 - [ ] Given a backend registered under a name, when `get_backend(name)` is
@@ -220,7 +220,7 @@ small. Revisit if a large PDF runs out of memory (risk in `00-vision.md`).
 file, so that I can OCR a batch in one command.
 
 **Component:** `src/ocr_pipeline/io.py`
-**Status:** Ready
+**Status:** In progress
 
 **Acceptance criteria:**
 - [ ] Given a folder with images, PDFs and a `.txt`, when it is expanded,
@@ -241,7 +241,7 @@ that returns page results, so that the CLI, the UI and my own code share
 the same logic.
 
 **Component:** `src/ocr_pipeline/pipeline.py`
-**Status:** Ready
+**Status:** In progress
 
 **Acceptance criteria:**
 - [ ] Given image and PDF paths and a backend, when `run_pipeline()` runs,
