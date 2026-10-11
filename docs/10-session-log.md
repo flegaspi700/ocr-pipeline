@@ -9,12 +9,46 @@ at the end (see `AGENTS.md`).
 
 ---
 
+## 2026-10-11 — Session wrap-up: Phase 1 done
+
+**Worked on:** F1.1 (S1.1.1, S1.1.2, S1.1.4, S1.1.5), F1.2 (S1.2.1,
+S1.2.2), formatter/linter, Phase 1 end checks
+
+**Time spent:** ~2h (whole session; the two entries below are part of it).
+Phase 1 total ~3h against an 8h estimate.
+
+**Changed:**
+- PR #8 — F1.1: `PageResult`, backend registry (Baidu and `requests`
+  removed), folder expansion, `run_pipeline()` with skip-and-report
+- PR #9 — F1.2: JSON/CSV export from page results, CLI as a thin caller
+  (exit 0/1/2), `run_pipeline(dpi, threshold)`; unused `load_inputs()` removed
+- PR #10 — Ruff formatter and linter, pinned 0.17.0, run in CI
+- PR #11 — `pytest-cov` + `pip-audit` (phase end, local), CLI corrupt-file
+  test, NFR statuses, threat-model check; Phase 1 Done
+- This entry — session times filled in; Phase 1 actual hours in
+  `04-project-plan.md`
+
+**Stopped at:** `main` clean and in sync after PR #11; 42 tests pass, Ruff
+clean, coverage 96%, `pip-audit` clean. Phase 1 Done; Phase 2 not started.
+
+**Next step:** `/story S2.1.1` — sample document generator: read S2.1.1 in
+`docs/01-requirements.md`, write its tests first (generated files in
+`samples/` with their known text saved as `.txt`, no real personal data).
+
+**Open questions:** Turn on Dependabot alerts and check secret-scanning
+alerts on GitHub — skipped for now by the user. Should `16-budget.md` drop
+to Optional? Follow-ups (not urgent): PyMuPDF `import fitz` deprecation
+warning; Pillow `getdata` deprecation in `tests/test_io_and_preprocess.py`
+(removed in Pillow 14, 2027-10).
+
+---
+
 ## 2026-10-11 — F1.2 Export and CLI built; F1.1 merged
 
 **Worked on:** PR #8 (F1.1) merged, branch deleted; `/story F1.2` —
 S1.2.1, S1.2.2
 
-**Time spent:** to be filled in at wrap-up
+**Time spent:** counted in the wrap-up entry above
 
 **Changed:**
 - `export.py` — JSON (all fields) and one-row-per-page CSV from
@@ -42,7 +76,7 @@ test `test_load_inputs_mixed` were removed with the user's OK.
 **Worked on:** `/story F1.1` — S1.1.1, S1.1.2, S1.1.4, S1.1.5 (S1.1.3 stays
 Dropped)
 
-**Time spent:** to be filled in at wrap-up
+**Time spent:** counted in the wrap-up entry above
 
 **Changed:**
 - `models.py` (new) — `Line`, `PageResult`; `page=None` when a whole file

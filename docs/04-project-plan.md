@@ -115,7 +115,7 @@ estimate and actual is what makes estimates better next time.
 | Phase | Status | Estimate (h) | Actual (h) | Actual start | Actual end |
 |---|---|---|---|---|---|
 | 0 — Environment setup | Done | — | — | — | 2026-10-10 (existing scaffold) |
-| 1 — Clean core | Done | 8 | ~1 + 2026-10-11 session (fill in at wrap-up) | 2026-10-10 | 2026-10-11 |
+| 1 — Clean core | Done | 8 | ~3 (incl. breakdown) | 2026-10-10 | 2026-10-11 |
 | 2 — Real OCR, local engine | Not started | 6 | | | |
 | 3 — Local web UI | Not started | 6 | | | |
 | 4 — Tuning | Not started | Ongoing | | | |
