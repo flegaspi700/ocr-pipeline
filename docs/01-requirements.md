@@ -132,9 +132,9 @@ at each phase end (`07-testing-checklist.md`).
 | F3.2 | Select or drag files and folders, then run | Feature | 3 | Backlog |
 | F3.3 | Page and text side by side, plus JSON/CSV download | Feature | 3 | Backlog |
 | E4 | Safe to change | Epic | 1 | Backlog |
-| F4.1 | Working dev environment and CI | Feature | 1 | Ready |
+| F4.1 | Working dev environment and CI | Feature | 1 | Done |
 | S4.1.1 | Dependencies install and existing tests pass locally | Story | 1 | Done |
-| S4.1.2 | CI runs on every PR | Story | 1 | Ready |
+| S4.1.2 | CI runs on every PR | Story | 1 | Done |
 
 Build order in Phase 1: F4.1 first (nothing can be tested before it), then
 F1.1, then F1.2.
@@ -491,13 +491,20 @@ with no machine setting needed; 8/8 existing tests pass. Recorded in
 `main` unnoticed.
 
 **Component:** `.github/workflows/`
-**Status:** Ready
+**Status:** Done
 
 **Acceptance criteria:**
-- [ ] Given a PR, when CI runs, then `pytest` runs on Python 3.13 on
+- [x] Given a PR, when CI runs, then `pytest` runs on Python 3.13 on
       Windows and the result shows on the PR
-- [ ] Given a deliberately failing test on a throwaway branch, when CI
+- [x] Given a deliberately failing test on a throwaway branch, when CI
       runs, then it goes red
+
+**Notes:** Done 2026-10-10. Green: PR #4's CI ran on `windows-2025`
+with CPython 3.13.15, 8 passed, result shown on the PR. Red: throwaway
+draft PR #5 with one deliberately failing test; the `test` job failed
+(`1 failed, 8 passed`, exit code 1) and the PR showed it as failing. PR #5
+was closed without merging and its branch deleted. A red check doesn't
+block merging unless `main` is protected (`13-git-workflow.md`, optional).
 
 ---
 
