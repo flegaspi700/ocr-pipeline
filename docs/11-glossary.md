@@ -13,5 +13,14 @@ keeps names consistent across the codebase (see the naming rules in
 
 | Term | Meaning | Use instead of |
 |---|---|---|
-| <term> | <plain-language definition, one or two sentences> | <rejected synonyms, or "—"> |
-| <e.g. `run`> | <e.g. "One full play session, from start screen to game over."> | <e.g. "game", "session", "attempt"> |
+| backend | An OCR engine behind the common interface: takes one page image, returns its lines of text with confidence. | "engine" (in code), "provider", "OCR service" |
+| backend registry | The name → backend lookup used by `get_backend()`; adding a backend means registering it here. | "factory", "plugin list" |
+| confidence | The backend's score (0–1) for how sure it is of a line's text. In CSV, the mean over a page's lines. | "score", "probability" |
+| known text | The text a sample document really contains, saved next to it as `.txt`, used to judge OCR output. | "ground truth", "expected text", "answer key" |
+| line | One line of recognized text on a page, with its confidence. | "result", "item", "block" |
+| page | One image sent to OCR: an image file, or one rasterized page of a PDF. Numbered from 1. | "frame", "sheet" |
+| page result | The `PageResult` for one page: source file, page number, text, lines, and error (if it failed). | "result dict", "record", "output" |
+| run | One call of `run_pipeline()` (or the CLI / UI) over a set of input files and folders. | "job", "batch", "session" |
+| sample document | A generated file in `samples/` with no real personal data, used to test and judge OCR. | "fixture", "test doc" |
+| skip-and-report | When a file or page fails, record the error in its page result, log a warning, and keep going. | "fail-soft", "continue on error" |
+| source file | The input file a page came from (image or PDF), as given by the user or found in a folder. | "input path", "origin" |

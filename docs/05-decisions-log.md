@@ -18,6 +18,44 @@ bottom for new entries.
 
 ---
 
+## 2026-10-10 — Phase order changed: refactor first; Baidu removed
+
+**Status:** Accepted
+
+**Context:** During `/breakdown`, the user chose a different order from the
+one in "Next direction" below (which put real OCR output before the
+refactor), and chose to drop the unverified Baidu backend (no key, request
+format guessed).
+
+**Options considered:**
+
+| Option | Pros | Cons | Cost |
+|---|---|---|---|
+| Working pipeline first (A's items), then refactor, then UI — as previously decided | Real OCR output early; tests the riskiest assumption sooner | Engine is wired into code that's about to be restructured | $0 |
+| Refactor first, then local engine, then UI | Engine lands on the clean core and registry; no rework | No real OCR until Phase 2; engine risk discovered later | $0 |
+
+Baidu: keep and park / verify now / remove.
+
+**Decision:** Refactor first (Phase 1 — Clean core), then a free local
+engine (Phase 2), then the local web UI (Phase 3). Remove the Baidu
+backend in S1.1.2. The environment fix (S4.1.1) still comes first,
+because test-first is impossible without it. The order part of "Next
+direction" below is superseded; its choice of Option B stands. The open
+engine choice is settled by spike S2.2.1; the UI library in F3.1.
+
+**Why:** User preference — build the engine on the final structure once.
+Removing Baidu makes the pipeline fully offline and $0 (NFR5, NFR6) and
+removes the only secret and network call.
+
+**Trade-offs accepted:** No real OCR until Phase 2. Between S1.1.2 and
+S2.2.2 the CLI has no working backend (tests use a fake one). G2's "compare
+backends" relies on the registry, not on having two backends today.
+
+**Revisit if:** the local engine spike (S2.2.1) finds both candidates
+unusable on this machine → reconsider a cloud backend (Option C).
+
+---
+
 ## 2026-10-10 — Next direction: clean core + simple local UI
 
 **Status:** Accepted
