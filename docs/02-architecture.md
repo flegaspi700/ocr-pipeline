@@ -33,10 +33,10 @@ Rules:
 A batch pipeline. `run_pipeline(paths, backend)` expands folders, turns
 each input into page images, preprocesses each page, OCRs it with the given
 backend, and returns one `PageResult` per page; a bad file or page becomes
-an error in its result and the run goes on (skip-and-report). The CLI still
-has its own copy of this loop until S1.2.2 makes it call `run_pipeline()`,
-then writes one JSON or CSV file. No state persists between runs. It runs fully offline: no external system is
-called (the Baidu API was removed in S1.1.2).
+an error in its result and the run goes on (skip-and-report). The CLI calls
+`run_pipeline()` and writes one JSON or CSV file. No state persists between
+runs. It runs fully offline: no external system is called (the Baidu API was
+removed in S1.1.2).
 
 ### System context
 
@@ -63,15 +63,15 @@ flowchart LR
     be["backend.py - OCRBackend, registry"]
     ex["export.py - JSON / CSV"]
 
-    cli -. "paths, backend - from S1.2.2" .-> pipe
+    cli -- "paths, backend, dpi, threshold" --> pipe
     pipe -- "paths" --> io
     io -- "RGB image per page" --> pipe
     pipe -- "page image" --> pre
     pre -- "processed image" --> pipe
     pipe -- "PNG bytes" --> be
     be -- "list of Line" --> pipe
-    pipe -. "list of PageResult" .-> cli
-    cli -- "per-page results" --> ex
+    pipe -- "list of PageResult" --> cli
+    cli -- "list of PageResult" --> ex
 ```
 
 ## Components
@@ -79,18 +79,22 @@ flowchart LR
 ### cli.py
 Parses arguments (`inputs`, `--output`, `--format json|csv`, `--dpi`,
 `--backend` (default `local`), `--threshold`), gets the backend from the
-registry (a missing backend is a plain usage error), and runs the loop:
-load → preprocess → encode PNG → recognize → collect → export. Entry point
-for the `ocr-pipeline` console script.
+registry, calls `run_pipeline()`, exports the page results, and logs a
+summary line. Exit code 0 = all pages succeeded, 1 = any page or file has an
+error, 2 = usage error (no inputs, unknown or missing backend, missing path,
+only empty folders) shown without a stack trace. Sets logging to INFO.
+Entry point for the `ocr-pipeline` console script.
 
 ### pipeline.py
-`run_pipeline(paths, backend) -> list[PageResult]`: raises "No input
+`run_pipeline(paths, backend, dpi=200, threshold=128) -> list[PageResult]`:
+raises "No input
 files" for an empty list, expands folders, then for each file loads its
 pages and, per page, preprocesses → PNG → `backend.recognize()` → a
 `PageResult` whose `text` is the lines joined with newlines. A file that
 won't load gives one result with `page=None` and `error`; a page the backend
 fails on gives a result with `error`. Both log a WARNING (message only;
-traceback at DEBUG). Not yet used by the CLI (S1.2.2).
+traceback at DEBUG). `dpi` goes to PDF rasterization, `threshold` to
+binarization.
 
 ### io.py
 `expand_inputs(paths)` replaces each folder with its top-level image and PDF
@@ -98,8 +102,7 @@ files, sorted by name (other files and subfolders skipped at DEBUG; a
 folder with nothing supported is an error if it's the only input, else a
 warning; a missing path is an error). Validates paths and file types (`.jpg .jpeg .png .tiff .tif .bmp .gif`,
 `.pdf`). Loads images as RGB with Pillow; rasterizes each PDF page with
-PyMuPDF at the given DPI. Returns a list of `(source path, image)` — PDF
-pages get a synthetic `<stem>_page_<n>.png` source name.
+PyMuPDF at the given DPI.
 
 ### preprocess.py
 Resizes to fit within 2200×3200 (never upscales), converts to grayscale,
@@ -119,27 +122,30 @@ Typed data passed between components: `Line` (`text`, `confidence`) and
 is None when the whole file failed to load.
 
 ### export.py
-`export_to_json` writes the results list as-is (UTF-8, indented).
-`export_to_csv` writes one row per page with the top-level keys as columns.
+Both take `list[PageResult]` and create the output folder if needed.
+`export_to_json` writes a list of page results with every field, lines
+included (UTF-8, indented; `[]` when empty). `export_to_csv` writes one row
+per page with columns `source_file, page, text, confidence, error`, where
+`confidence` is the mean over the page's lines (empty if none). It's
+UTF-8 with a byte-order mark so Excel reads non-ASCII text; an empty list
+writes the header only.
 
 ### Known gaps
 
-- Pages are processed one at a time — no parallel inference yet (the README
-  mentions it).
-- All pages of all inputs are loaded into memory before OCR starts.
-- CSV export writes each page's nested `results` list as a single string
-  column.
+- Pages are processed one at a time — no parallel inference.
+- All pages of one file are loaded into memory before its OCR starts (S1.1.3
+  dropped).
 
 ## Data flow contract
 
 - **caller → pipeline:** `run_pipeline(paths: Iterable[Path], backend:
-  OCRBackend) -> list[PageResult]`, one per page in input order.
-- **io → preprocess:** `list[tuple[Path, PIL.Image.Image]]`, images in RGB.
+  OCRBackend, dpi: int = 200, threshold: int = 128) -> list[PageResult]`,
+  one per page in input order.
+- **io → pipeline:** `list[PIL.Image.Image]` per file, pages in RGB.
 - **preprocess → backend:** PNG-encoded `bytes` of a grayscale, binarized
   image.
-- **backend → cli:** `list[Line]`, in reading order.
-- **cli → export:** `list[{"source": str, "results": list[dict]}]`, one
-  entry per page (each `Line` as a dict) — moves to `PageResult` in F1.2.
+- **backend → pipeline:** `list[Line]`, in reading order.
+- **cli → export:** `list[PageResult]`, one per page.
 
 ## Design options and trade-offs
 

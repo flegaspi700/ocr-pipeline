@@ -9,6 +9,34 @@ at the end (see `AGENTS.md`).
 
 ---
 
+## 2026-10-11 — F1.2 Export and CLI built; F1.1 merged
+
+**Worked on:** PR #8 (F1.1) merged, branch deleted; `/story F1.2` —
+S1.2.1, S1.2.2
+
+**Time spent:** to be filled in at wrap-up
+
+**Changed:**
+- `export.py` — JSON (all fields) and one-row-per-page CSV from
+  `PageResult` (`source_file, page, text, confidence, error`; UTF-8 with BOM)
+- `pipeline.py` — `run_pipeline()` takes `dpi` and `threshold` (option A,
+  chosen by the user, so the CLI options keep working)
+- `cli.py` — thin caller of `run_pipeline()`; exit 0 / 1 (any error) / 2
+  (usage); summary line logged; `main(argv)` returns the exit code
+- `tests/fakes.py` — shared `FakeBackend` (third copy extracted)
+- Docs: architecture (components diagram, contract), AGENTS run command
+
+**Stopped at:** F1.2 Done on `feature/F1.2-export-and-cli`; 42 tests pass.
+Not yet pushed, no PR. Phase 1 still has the formatter/linter task left.
+
+**Next step:** after the F1.2 PR is merged: choose formatter and linter
+(last Phase 1 task), then the Phase 1 end checks (`07-testing-checklist.md`).
+
+**Open questions:** None. `io.load_inputs()` (unused after S1.2.2) and its
+test `test_load_inputs_mixed` were removed with the user's OK.
+
+---
+
 ## 2026-10-11 — F1.1 Clean pipeline core built
 
 **Worked on:** `/story F1.1` — S1.1.1, S1.1.2, S1.1.4, S1.1.5 (S1.1.3 stays

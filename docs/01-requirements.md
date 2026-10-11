@@ -116,9 +116,9 @@ at each phase end (`07-testing-checklist.md`).
 | S1.1.3 | Pages loaded one at a time | Story | 1 | Dropped |
 | S1.1.4 | Folder inputs expand to their files | Story | 1 | Done |
 | S1.1.5 | `run_pipeline()` with skip-and-report | Story | 1 | Done |
-| F1.2 | Export and CLI on the core | Feature | 1 | Ready |
-| S1.2.1 | JSON and CSV from page results | Story | 1 | Ready |
-| S1.2.2 | CLI is a thin caller of `run_pipeline()` | Story | 1 | Ready |
+| F1.2 | Export and CLI on the core | Feature | 1 | Done |
+| S1.2.1 | JSON and CSV from page results | Story | 1 | Done |
+| S1.2.2 | CLI is a thin caller of `run_pipeline()` | Story | 1 | Done |
 | E2 | A free local engine I can judge | Epic | 2, 4 | Backlog |
 | F2.1 | Generated sample documents | Feature | 2 | Ready |
 | S2.1.1 | Sample document generator | Story | 2 | Ready |
@@ -270,17 +270,17 @@ CSV with one row per page and exits non-zero when any file failed.
 that I can open the results in a spreadsheet.
 
 **Component:** `src/ocr_pipeline/export.py`
-**Status:** Ready
+**Status:** Done
 
 **Acceptance criteria:**
-- [ ] Given page results, when exported as JSON, then the file is a list of
+- [x] Given page results, when exported as JSON, then the file is a list of
       page results with all fields
-- [ ] Given page results, when exported as CSV, then there is one row per
+- [x] Given page results, when exported as CSV, then there is one row per
       page with columns `source_file, page, text, confidence, error`;
       `confidence` is the mean over lines, empty when there are none
-- [ ] Given text with commas, quotes, newlines and non-ASCII characters,
+- [x] Given text with commas, quotes, newlines and non-ASCII characters,
       when exported to CSV and read back, then it is unchanged
-- [ ] Given an empty results list, when exported, then CSV has headers only
+- [x] Given an empty results list, when exported, then CSV has headers only
       and JSON is `[]` (no error)
 
 #### S1.2.2 — CLI is a thin caller of `run_pipeline()`
@@ -289,16 +289,16 @@ that I can open the results in a spreadsheet.
 to run the whole pipeline, so that one command gives me the results.
 
 **Component:** `src/ocr_pipeline/cli.py`
-**Status:** Ready
+**Status:** Done
 
 **Acceptance criteria:**
-- [ ] Given files and/or folders and `--output`, when the CLI runs, then it
+- [x] Given files and/or folders and `--output`, when the CLI runs, then it
       writes the chosen format via `run_pipeline()` and the exporters
-- [ ] Given all pages succeed, then exit code is 0; given any page has an
+- [x] Given all pages succeed, then exit code is 0; given any page has an
       error, then exit code is 1; either way a summary line is logged
-- [ ] Given no inputs or an unknown `--backend`, then a usage error is shown
+- [x] Given no inputs or an unknown `--backend`, then a usage error is shown
       and exit code is 2
-- [ ] Given any run, then output goes through `logging` (no `print`), and
+- [x] Given any run, then output goes through `logging` (no `print`), and
       document text is never logged above DEBUG
 
 **Notes:** No real backend exists until S2.2.2 — tests use a fake one.

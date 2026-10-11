@@ -60,8 +60,8 @@ with no real logic yet.
 - [x] S1.1.2 — Backend registry; Baidu removed
 - [x] S1.1.4 — Folder inputs expand to their files
 - [x] S1.1.5 — `run_pipeline()` with skip-and-report
-- [ ] S1.2.1 — JSON and CSV from page results
-- [ ] S1.2.2 — CLI is a thin caller of `run_pipeline()`
+- [x] S1.2.1 — JSON and CSV from page results
+- [x] S1.2.2 — CLI is a thin caller of `run_pipeline()`
 - [ ] Choose formatter and linter, and fill in `AGENTS.md` → Commands
       (setup task, pending entry in `05-decisions-log.md`)
 
@@ -149,7 +149,7 @@ gantt
     section Phase 1 — Clean core
     F4.1 Dev environment and CI   :done, f41, 2026-10-10 00:00, 1h
     F1.1 Clean pipeline core      :done, f11, after f41, 4h
-    F1.2 Export and CLI           :f12, after f11, 2h
+    F1.2 Export and CLI           :done, f12, after f11, 2h
     Phase 1 done                  :milestone, m1, after f12, 0h
 
     section Phase 2 — Real OCR

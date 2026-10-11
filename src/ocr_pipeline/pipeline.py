@@ -4,7 +4,8 @@ Expands folders, loads each file's pages (`io.py`), preprocesses each page
 (`preprocess.py`), sends it to the given backend (`backend.py`) and collects
 one `PageResult` per page (`models.py`). The CLI and, later, the UI both call
 it. A file or page that fails is recorded as an error and the run goes on
-(skip-and-report, NFR4). Built for S1.1.5.
+(skip-and-report, NFR4). Built for S1.1.5; `dpi` and `threshold`
+added in S1.2.2 so the CLI options keep working.
 """
 
 import logging
@@ -22,8 +23,13 @@ from .preprocess import preprocess_image
 logger = logging.getLogger(__name__)
 
 
-def run_pipeline(paths: Iterable[Path], backend: OCRBackend) -> list[PageResult]:
+def run_pipeline(
+    paths: Iterable[Path], backend: OCRBackend, dpi: int = 200, threshold: int = 128
+) -> list[PageResult]:
     """OCR every page of `paths` (files and folders) with `backend`.
+
+    PDF pages are rasterized at `dpi`; every page is binarized at
+    `threshold` (0-255) before OCR.
 
     Returns one `PageResult` per page, in input order (a folder's files in
     name order, a PDF's pages in page order). A file that can't be loaded
@@ -44,7 +50,7 @@ def run_pipeline(paths: Iterable[Path], backend: OCRBackend) -> list[PageResult]
         # type, unreadable); record it and move on so one bad file never stops
         # the run (NFR4).
         try:
-            pages = load_pages(path)
+            pages = load_pages(path, dpi)
         except Exception as error:
             logger.warning("Skipping file %s: %s", source_file, error)
             logger.debug("Load failure details for %s", source_file, exc_info=True)
@@ -52,27 +58,29 @@ def run_pipeline(paths: Iterable[Path], backend: OCRBackend) -> list[PageResult]
             continue
 
         for page_number, image in enumerate(pages, start=1):
-            results.append(ocr_page(source_file, page_number, image, backend))
+            results.append(ocr_page(source_file, page_number, image, backend, threshold))
 
     failed = sum(1 for result in results if result.error)
     logger.info("Run finished: %d page results, %d with errors", len(results), failed)
     return results
 
 
-def load_pages(path: Path) -> list[Image.Image]:
+def load_pages(path: Path, dpi: int) -> list[Image.Image]:
     """Return the RGB page images of one image or PDF file; ValueError for other types."""
     if is_image_file(path):
         return [load_image(path)]
     if path.suffix.lower() == ".pdf":
-        return rasterize_pdf(path)
+        return rasterize_pdf(path, dpi=dpi)
     raise ValueError(f"Unsupported file type '{path.suffix}'. Use an image or PDF file.")
 
 
-def ocr_page(source_file: str, page: int, image: Image.Image, backend: OCRBackend) -> PageResult:
+def ocr_page(
+    source_file: str, page: int, image: Image.Image, backend: OCRBackend, threshold: int
+) -> PageResult:
     """Preprocess one page, OCR it, and return its result (with `error` set if that failed)."""
     try:
         buffer = BytesIO()
-        preprocess_image(image).save(buffer, format="PNG")
+        preprocess_image(image, threshold=threshold).save(buffer, format="PNG")
         lines = backend.recognize(buffer.getvalue())
     # Backends are third-party engines that can fail in any way; one page's
     # failure must not stop the others (NFR4).

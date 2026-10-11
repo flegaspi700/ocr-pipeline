@@ -1,5 +1,6 @@
-"""Tests for run_pipeline() and its skip-and-report behaviour (S1.1.5, F1.1)."""
+"""Tests for run_pipeline(): skip-and-report (S1.1.5, F1.1); dpi and threshold (S1.2.2)."""
 
+import io
 import logging
 from pathlib import Path
 
@@ -7,23 +8,9 @@ import fitz
 import pytest
 from PIL import Image
 
-from ocr_pipeline.backend import OCRBackend
+from fakes import FakeBackend
 from ocr_pipeline.models import Line
 from ocr_pipeline.pipeline import run_pipeline
-
-
-class FakeBackend(OCRBackend):
-    """Returns two fixed lines per page; raises on the calls listed in `fail_on` (1-based)."""
-
-    def __init__(self, fail_on: tuple[int, ...] = ()) -> None:
-        self.calls = 0
-        self.fail_on = fail_on
-
-    def recognize(self, image_bytes: bytes) -> list[Line]:
-        self.calls += 1
-        if self.calls in self.fail_on:
-            raise RuntimeError("engine crashed")
-        return [Line(text="hello", confidence=0.9), Line(text="world", confidence=0.8)]
 
 
 def make_image(path: Path) -> Path:
@@ -136,3 +123,27 @@ def test_feature_done_when_mixed_inputs_folder_and_corrupt_file(tmp_path: Path) 
         ("corrupt.pdf", None),
     ]
     assert [r.error is None for r in results] == [True] * 6 + [False]
+
+
+def test_dpi_sets_pdf_page_resolution(tmp_path: Path) -> None:
+    pdf = make_pdf(tmp_path / "doc.pdf", pages=1)
+    low, high = FakeBackend(), FakeBackend()
+
+    run_pipeline([pdf], low, dpi=72)
+    run_pipeline([pdf], high, dpi=144)
+
+    low_size = Image.open(io.BytesIO(low.pages[0])).size
+    high_size = Image.open(io.BytesIO(high.pages[0])).size
+    assert high_size == (low_size[0] * 2, low_size[1] * 2)
+
+
+def test_threshold_sets_binarization(tmp_path: Path) -> None:
+    gray = tmp_path / "gray.png"
+    Image.new("RGB", (20, 20), color=(100, 100, 100)).save(gray)
+    lenient, strict = FakeBackend(), FakeBackend()
+
+    run_pipeline([gray], lenient, threshold=50)
+    run_pipeline([gray], strict, threshold=200)
+
+    assert set(Image.open(io.BytesIO(lenient.pages[0])).getextrema()) == {255}
+    assert set(Image.open(io.BytesIO(strict.pages[0])).getextrema()) == {0}
