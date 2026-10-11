@@ -115,7 +115,7 @@ estimate and actual is what makes estimates better next time.
 | Phase | Status | Estimate (h) | Actual (h) | Actual start | Actual end |
 |---|---|---|---|---|---|
 | 0 — Environment setup | Done | — | — | — | 2026-10-10 (existing scaffold) |
-| 1 — Clean core | In progress | 8 | ~1 so far (incl. breakdown) | 2026-10-10 | |
+| 1 — Clean core | Done | 8 | ~1 + 2026-10-11 session (fill in at wrap-up) | 2026-10-10 | 2026-10-11 |
 | 2 — Real OCR, local engine | Not started | 6 | | | |
 | 3 — Local web UI | Not started | 6 | | | |
 | 4 — Tuning | Not started | Ongoing | | | |
@@ -150,7 +150,7 @@ gantt
     F4.1 Dev environment and CI   :done, f41, 2026-10-10 00:00, 1h
     F1.1 Clean pipeline core      :done, f11, after f41, 4h
     F1.2 Export and CLI           :done, f12, after f11, 2h
-    Phase 1 done                  :milestone, m1, after f12, 0h
+    Phase 1 done                  :done, milestone, m1, after f12, 0h
 
     section Phase 2 — Real OCR
     F2.1 Sample documents         :f21, after m1, 1h
