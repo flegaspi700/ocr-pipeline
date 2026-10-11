@@ -55,7 +55,8 @@ at the end of the feature.
    `AGENTS.md` (or suggest `/decide`). In a feature or epic run this always
    stops the run, even if the user chose "all in one go".
 7. Go through the **Definition of Done** in `docs/01-requirements.md` item
-   by item and report met / not met. Fix what's not met; anything you
+   by item and report met / not met as a table, in the format under
+   **Reporting the DoD** in that doc. Fix what's not met; anything you
    can't verify (manual or accessibility checks), list for the user.
 8. Mark the story `Done` (story + Summary table) only when every DoD item
    is met. In a feature or epic run, commit it on the branch
