@@ -11,8 +11,7 @@ authors = [
 ]
 dependencies = [
   "Pillow>=10.0.0",
-  "PyMuPDF>=1.22.0",
-  "requests>=2.31.0"
+  "PyMuPDF>=1.22.0"
 ]
 [project.scripts]
 ocr-pipeline = "ocr_pipeline.cli:main"

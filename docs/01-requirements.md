@@ -112,7 +112,7 @@ at each phase end (`07-testing-checklist.md`).
 | E1 | Batch OCR to structured output | Epic | 1 | Backlog |
 | F1.1 | Clean pipeline core | Feature | 1 | In progress |
 | S1.1.1 | Typed page result | Story | 1 | Done |
-| S1.1.2 | Backend registry; Baidu removed | Story | 1 | In progress |
+| S1.1.2 | Backend registry; Baidu removed | Story | 1 | Done |
 | S1.1.3 | Pages loaded one at a time | Story | 1 | Dropped |
 | S1.1.4 | Folder inputs expand to their files | Story | 1 | In progress |
 | S1.1.5 | `run_pipeline()` with skip-and-report | Story | 1 | In progress |
@@ -184,16 +184,16 @@ registry, so that adding an engine touches only the backend module and a
 CLI option (`00-vision.md` → Success looks like).
 
 **Component:** `src/ocr_pipeline/backend.py`
-**Status:** In progress
+**Status:** Done
 
 **Acceptance criteria:**
-- [ ] Given a backend registered under a name, when `get_backend(name)` is
+- [x] Given a backend registered under a name, when `get_backend(name)` is
       called, then it returns that backend
-- [ ] Given an unknown name, when `get_backend(name)` is called, then the
+- [x] Given an unknown name, when `get_backend(name)` is called, then the
       error lists the available names
-- [ ] Given an empty registry, when a backend is requested, then the error
+- [x] Given an empty registry, when a backend is requested, then the error
       says "no OCR backend installed" and what to do — not a stack trace
-- [ ] Given the change is done, then the Baidu backend, its tests, its
+- [x] Given the change is done, then the Baidu backend, its tests, its
       `.env.example` entries and `requests` (if nothing else uses it) are
       gone, and `AGENTS.md`, `README.md`, `00-vision.md`,
       `02-architecture.md`, `03-tech-stack.md` and the `14-security.md`

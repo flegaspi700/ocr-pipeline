@@ -30,9 +30,9 @@ to-do. **Optional** = kept, but low priority.
 | `08` prompt log | Active | Cheap to keep |
 | `09` status report | Not needed | Single phase — a trial with no fixed deadline |
 | `12` manual tests | Active | Automated tests can't judge OCR quality on real documents |
-| `14` security | Active | API key, network call to the OCR service, outside file input, third-party dependencies |
+| `14` security | Active | Outside file input, third-party dependencies (no network call or API key since S1.1.2) |
 | `15` accessibility | Active | Simple local web UI (drag/select files and folders) — Apps and websites checklist |
-| `16` budget | Active | Paid OCR API, used within its free quota only |
+| `16` budget | Active | NFR6: keep spend at $0 (no paid OCR API since S1.1.2) |
 
 **When the project grows into a doc:** if a change introduces something a
 Not-needed doc covers — the first network call, secret, or dependency
@@ -58,8 +58,8 @@ here; in replies, briefly explain the approach before the code. When
 `ocr_pipeline` is a Python 3.11+ CLI (`ocr-pipeline`) and library that
 loads images and multi-page PDFs (PDF pages rasterized with PyMuPDF),
 preprocesses them (resize, grayscale, binarize with Pillow), sends each page
-to a pluggable OCR backend (Baidu over HTTP today; a free local engine
-is planned, see `05-decisions-log.md`), and exports the per-page results as JSON or CSV.
+to a pluggable OCR backend picked by name from a registry (none installed
+yet; a free local engine is planned, see `05-decisions-log.md`), and exports the per-page results as JSON or CSV.
 It's a personal trial project to learn the pipeline end to end and judge
 whether the OCR is good enough on my own documents. Hard boundaries: only a simple local web UI
 (no hosted service), free tiers only, and API keys only from the environment —

@@ -56,8 +56,8 @@ with no real logic yet.
 
 - [x] S4.1.1 — Dependencies install and existing tests pass locally
 - [x] S4.1.2 — CI runs on every PR
-- [ ] S1.1.1 — Typed page result
-- [ ] S1.1.2 — Backend registry; Baidu removed
+- [x] S1.1.1 — Typed page result
+- [x] S1.1.2 — Backend registry; Baidu removed
 - [ ] S1.1.4 — Folder inputs expand to their files
 - [ ] S1.1.5 — `run_pipeline()` with skip-and-report
 - [ ] S1.2.1 — JSON and CSV from page results
