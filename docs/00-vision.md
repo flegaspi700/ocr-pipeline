@@ -86,14 +86,14 @@ creep, including from AI agents.
 
 - **Assumption:** the dependencies (Pillow, PyMuPDF, requests) install and
   the existing tests pass → **confirmed 2026-10-10** (S4.1.1): clean
-  install in a fresh venv, all 8 existing tests pass.
-- **Assumption:** Baidu's OCR API is reachable and usable from here within
-  a free tier, and its real request format can be matched (the current code
-  guesses it) → check with one real call on one sample image before
-  building more on top.
-- **Risk:** Baidu turns out unusable (sign-up, region, cost, or API
-  mismatch), blocking G1 → keep the pluggable backend and add a local, free
-  backend (e.g. Tesseract) as a fallback.
+  install in a fresh venv, all 8 existing tests pass. (`requests` was later
+  removed with the Baidu backend, S1.1.2.)
+- **Closed:** the Baidu assumption and risk (unverified API, no key) —
+  Baidu was removed in S1.1.2 (`05-decisions-log.md` → 2026-10-10 Phase
+  order changed); a free local engine replaces it in Phase 2.
+- **Risk:** no free local engine reads my documents well enough, blocking
+  G1 → the S2.2.1 spike compares Tesseract and RapidOCR on the samples
+  before one is built in.
 - **Risk:** fixed-threshold binarization hurts accuracy on photos or
   low-contrast scans → spot-check against samples; make preprocessing
   optional or tunable.

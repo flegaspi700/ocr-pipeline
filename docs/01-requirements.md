@@ -110,12 +110,12 @@ at each phase end (`07-testing-checklist.md`).
 | ID | Title | Type | Phase | Status |
 |---|---|---|---|---|
 | E1 | Batch OCR to structured output | Epic | 1 | Backlog |
-| F1.1 | Clean pipeline core | Feature | 1 | Ready |
-| S1.1.1 | Typed page result | Story | 1 | Ready |
-| S1.1.2 | Backend registry; Baidu removed | Story | 1 | Ready |
+| F1.1 | Clean pipeline core | Feature | 1 | Done |
+| S1.1.1 | Typed page result | Story | 1 | Done |
+| S1.1.2 | Backend registry; Baidu removed | Story | 1 | Done |
 | S1.1.3 | Pages loaded one at a time | Story | 1 | Dropped |
-| S1.1.4 | Folder inputs expand to their files | Story | 1 | Ready |
-| S1.1.5 | `run_pipeline()` with skip-and-report | Story | 1 | Ready |
+| S1.1.4 | Folder inputs expand to their files | Story | 1 | Done |
+| S1.1.5 | `run_pipeline()` with skip-and-report | Story | 1 | Done |
 | F1.2 | Export and CLI on the core | Feature | 1 | Ready |
 | S1.2.1 | JSON and CSV from page results | Story | 1 | Ready |
 | S1.2.2 | CLI is a thin caller of `run_pipeline()` | Story | 1 | Ready |
@@ -166,15 +166,15 @@ between components, so the interface is self-documenting
 (`06-coding-conventions.md` → Typing).
 
 **Component:** `src/ocr_pipeline/models.py`
-**Status:** Ready
+**Status:** Done
 
 **Acceptance criteria:**
-- [ ] Given OCR output for one page, when a `PageResult` is built, then it
+- [x] Given OCR output for one page, when a `PageResult` is built, then it
       holds `source_file`, `page` (1-based), `text`, `lines` (each with
       `text` and `confidence`) and `error`
-- [ ] Given a page with no text, when it is built, then `text == ""` and
+- [x] Given a page with no text, when it is built, then `text == ""` and
       `lines == []` (not `None`)
-- [ ] Given a failed page, when it is built, then `error` holds the message
+- [x] Given a failed page, when it is built, then `error` holds the message
       and `text` is empty
 
 #### S1.1.2 — Backend registry; Baidu removed
@@ -184,16 +184,16 @@ registry, so that adding an engine touches only the backend module and a
 CLI option (`00-vision.md` → Success looks like).
 
 **Component:** `src/ocr_pipeline/backend.py`
-**Status:** Ready
+**Status:** Done
 
 **Acceptance criteria:**
-- [ ] Given a backend registered under a name, when `get_backend(name)` is
+- [x] Given a backend registered under a name, when `get_backend(name)` is
       called, then it returns that backend
-- [ ] Given an unknown name, when `get_backend(name)` is called, then the
+- [x] Given an unknown name, when `get_backend(name)` is called, then the
       error lists the available names
-- [ ] Given an empty registry, when a backend is requested, then the error
+- [x] Given an empty registry, when a backend is requested, then the error
       says "no OCR backend installed" and what to do — not a stack trace
-- [ ] Given the change is done, then the Baidu backend, its tests, its
+- [x] Given the change is done, then the Baidu backend, its tests, its
       `.env.example` entries and `requests` (if nothing else uses it) are
       gone, and `AGENTS.md`, `README.md`, `00-vision.md`,
       `02-architecture.md`, `03-tech-stack.md` and the `14-security.md`
@@ -220,18 +220,18 @@ small. Revisit if a large PDF runs out of memory (risk in `00-vision.md`).
 file, so that I can OCR a batch in one command.
 
 **Component:** `src/ocr_pipeline/io.py`
-**Status:** Ready
+**Status:** Done
 
 **Acceptance criteria:**
-- [ ] Given a folder with images, PDFs and a `.txt`, when it is expanded,
+- [x] Given a folder with images, PDFs and a `.txt`, when it is expanded,
       then the supported files come back in sorted order and the `.txt` is
       skipped with a debug log
-- [ ] Given a folder with subfolders, when it is expanded, then files in
+- [x] Given a folder with subfolders, when it is expanded, then files in
       subfolders are ignored (top level only)
-- [ ] Given an empty folder or one with no supported files, when it is the
+- [x] Given an empty folder or one with no supported files, when it is the
       only input, then a clear error names the folder; when other inputs
       exist, a warning is logged and the run continues
-- [ ] Given a path that doesn't exist, when it is expanded, then the error
+- [x] Given a path that doesn't exist, when it is expanded, then the error
       names the path
 
 #### S1.1.5 — `run_pipeline()` with skip-and-report
@@ -241,17 +241,17 @@ that returns page results, so that the CLI, the UI and my own code share
 the same logic.
 
 **Component:** `src/ocr_pipeline/pipeline.py`
-**Status:** Ready
+**Status:** Done
 
 **Acceptance criteria:**
-- [ ] Given image and PDF paths and a backend, when `run_pipeline()` runs,
+- [x] Given image and PDF paths and a backend, when `run_pipeline()` runs,
       then it returns one `PageResult` per page, in input order
-- [ ] Given one corrupt file among good ones, when it runs, then the good
+- [x] Given one corrupt file among good ones, when it runs, then the good
       pages are processed and the bad file appears as a `PageResult` with
       `error` set, plus a logged warning
-- [ ] Given a backend that raises on one page, when it runs, then only that
+- [x] Given a backend that raises on one page, when it runs, then only that
       page carries the error
-- [ ] Given no input paths, when it runs, then it raises "no input files"
+- [x] Given no input paths, when it runs, then it raises "no input files"
 
 **Notes:** Skip-and-report chosen in `/breakdown` (NFR4).
 

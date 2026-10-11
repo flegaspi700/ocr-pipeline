@@ -21,7 +21,7 @@ Existing stack, recorded as found in the repo (see `05-decisions-log.md` →
 | CLI | `argparse` (standard library) | No extra dependency |
 | PDF rasterization | PyMuPDF (`fitz`) ≥ 1.22 | Renders PDF pages to images at a chosen DPI |
 | Image preprocessing | Pillow ≥ 10.0 | Resize, grayscale, binarize |
-| OCR backend (HTTP) | `requests` ≥ 2.31 → Baidu OCR API | First backend behind the pluggable `OCRBackend` interface |
+| OCR backend | None yet — backend registry in `backend.py` (S1.1.2); a free local engine comes in Phase 2 | Baidu removed (`05-decisions-log.md` → Phase order changed) |
 | Export | `json`, `csv` (standard library) | No extra dependency |
 | Persistence | None — output files only | Batch tool, no state between runs |
 
@@ -32,7 +32,7 @@ Existing stack, recorded as found in the repo (see `05-decisions-log.md` →
 | <editor> | Primary editor |
 | <formatter> | Formatting — not set up yet |
 | <linter / type checker> | Linting and type checks — not set up yet |
-| pytest | Tests (`tests/`, HTTP calls mocked with `monkeypatch`) |
+| pytest | Tests (`tests/`, a fake backend registered with `monkeypatch`) |
 | <coverage tool> | Coverage report (a hint, no target %) — not set up yet |
 | <dependency audit tool, e.g. pip-audit> | Known vulnerabilities in dependencies (`14-security.md`) — not set up yet |
 | venv (`.venv/`, git-ignored) | Dependency isolation |
@@ -52,13 +52,13 @@ the network/proxy and the Python version first. Never work around it with
 ```
 Pillow>=10.0.0
 PyMuPDF>=1.22.0
-requests>=2.31.0
 ```
+
+(`requests` was removed with the Baidu backend in S1.1.2.)
 
 Dev: `pytest` (installed separately in CI; not declared in `pyproject.toml`).
 
 ## Deferred / not needed yet
 
-- A local OCR backend (e.g. Tesseract) — if Baidu proves unusable or for
-  comparison (see `00-vision.md` → risks)
+- A local OCR backend — chosen in the S2.2.1 spike (Tesseract vs RapidOCR)
 - OpenCV — only if `deskew` (currently a placeholder) needs it

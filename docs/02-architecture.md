@@ -30,9 +30,13 @@ Rules:
 
 ## Overview
 
-A batch pipeline. One CLI run loads every input, turns each into page
-images, preprocesses each page, OCRs it with the selected backend, and
-writes one JSON or CSV file. No state persists between runs.
+A batch pipeline. `run_pipeline(paths, backend)` expands folders, turns
+each input into page images, preprocesses each page, OCRs it with the given
+backend, and returns one `PageResult` per page; a bad file or page becomes
+an error in its result and the run goes on (skip-and-report). The CLI still
+has its own copy of this loop until S1.2.2 makes it call `run_pipeline()`,
+then writes one JSON or CSV file. No state persists between runs. It runs fully offline: no external system is
+called (the Baidu API was removed in S1.1.2).
 
 ### System context
 
@@ -40,12 +44,11 @@ writes one JSON or CSV file. No state persists between runs.
 flowchart LR
     user(["Me - CLI or Python"])
     sys["ocr_pipeline"]
-    baidu["Baidu OCR API"]
+    files[("Image and PDF files")]
     out[("Output file")]
 
     user -- "file paths, options" --> sys
-    sys -- "page image PNG + API key" --> baidu
-    baidu -- "recognized text JSON" --> sys
+    files -- "page images" --> sys
     sys -- "results.json or results.csv" --> out
 ```
 
@@ -53,16 +56,21 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    cli["cli.py - parse args, orchestrate"]
-    io["io.py - load images, rasterize PDFs"]
+    cli["cli.py - parse args, export"]
+    pipe["pipeline.py - run_pipeline"]
+    io["io.py - expand folders, load images, rasterize PDFs"]
     pre["preprocess.py - resize, grayscale, binarize"]
-    be["backend.py - OCRBackend / Baidu"]
+    be["backend.py - OCRBackend, registry"]
     ex["export.py - JSON / CSV"]
 
-    cli -- "paths, dpi" --> io
-    io -- "source + RGB image per page" --> pre
-    pre -- "processed image as PNG bytes" --> be
-    be -- "list of result dicts" --> cli
+    cli -. "paths, backend - from S1.2.2" .-> pipe
+    pipe -- "paths" --> io
+    io -- "RGB image per page" --> pipe
+    pipe -- "page image" --> pre
+    pre -- "processed image" --> pipe
+    pipe -- "PNG bytes" --> be
+    be -- "list of Line" --> pipe
+    pipe -. "list of PageResult" .-> cli
     cli -- "per-page results" --> ex
 ```
 
@@ -70,12 +78,25 @@ flowchart LR
 
 ### cli.py
 Parses arguments (`inputs`, `--output`, `--format json|csv`, `--dpi`,
-`--backend baidu`, `--threshold`), picks the backend, and runs the loop:
+`--backend` (default `local`), `--threshold`), gets the backend from the
+registry (a missing backend is a plain usage error), and runs the loop:
 load → preprocess → encode PNG → recognize → collect → export. Entry point
 for the `ocr-pipeline` console script.
 
+### pipeline.py
+`run_pipeline(paths, backend) -> list[PageResult]`: raises "No input
+files" for an empty list, expands folders, then for each file loads its
+pages and, per page, preprocesses → PNG → `backend.recognize()` → a
+`PageResult` whose `text` is the lines joined with newlines. A file that
+won't load gives one result with `page=None` and `error`; a page the backend
+fails on gives a result with `error`. Both log a WARNING (message only;
+traceback at DEBUG). Not yet used by the CLI (S1.2.2).
+
 ### io.py
-Validates paths and file types (`.jpg .jpeg .png .tiff .tif .bmp .gif`,
+`expand_inputs(paths)` replaces each folder with its top-level image and PDF
+files, sorted by name (other files and subfolders skipped at DEBUG; a
+folder with nothing supported is an error if it's the only input, else a
+warning; a missing path is an error). Validates paths and file types (`.jpg .jpeg .png .tiff .tif .bmp .gif`,
 `.pdf`). Loads images as RGB with Pillow; rasterizes each PDF page with
 PyMuPDF at the given DPI. Returns a list of `(source path, image)` — PDF
 pages get a synthetic `<stem>_page_<n>.png` source name.
@@ -86,11 +107,16 @@ and binarizes at a fixed threshold (default 128). `deskew` is a placeholder
 that returns the image unchanged.
 
 ### backend.py
-Abstract `OCRBackend.recognize(image_bytes) -> list[dict]`.
-`BaiduUnlimitedOCRBackend` reads `BAIDU_OCR_API_KEY` and
-`BAIDU_OCR_API_URL` from the environment, POSTs the PNG with a Bearer
-token (60 s timeout), and returns the response's `results` list. The
-request format is a guess and is not yet verified against Baidu's real API.
+Abstract `OCRBackend.recognize(image_bytes) -> list[Line]`. `BACKENDS`
+is the backend registry (name → backend class); `get_backend(name)`
+returns a new backend, or raises `ValueError` saying no backend is
+installed, or listing the registered names. The registry is empty until
+the local engine (S2.2.2); tests register a fake backend.
+
+### models.py
+Typed data passed between components: `Line` (`text`, `confidence`) and
+`PageResult` (`source_file`, `page`, `text`, `lines`, `error`); `page`
+is None when the whole file failed to load.
 
 ### export.py
 `export_to_json` writes the results list as-is (UTF-8, indented).
@@ -106,13 +132,14 @@ request format is a guess and is not yet verified against Baidu's real API.
 
 ## Data flow contract
 
+- **caller → pipeline:** `run_pipeline(paths: Iterable[Path], backend:
+  OCRBackend) -> list[PageResult]`, one per page in input order.
 - **io → preprocess:** `list[tuple[Path, PIL.Image.Image]]`, images in RGB.
 - **preprocess → backend:** PNG-encoded `bytes` of a grayscale, binarized
   image.
-- **backend → cli:** `list[dict]` — the backend's raw result items (shape
-  depends on the backend; not yet normalized).
+- **backend → cli:** `list[Line]`, in reading order.
 - **cli → export:** `list[{"source": str, "results": list[dict]}]`, one
-  entry per page.
+  entry per page (each `Line` as a dict) — moves to `PageResult` in F1.2.
 
 ## Design options and trade-offs
 

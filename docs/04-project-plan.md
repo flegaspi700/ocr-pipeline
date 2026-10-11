@@ -56,10 +56,10 @@ with no real logic yet.
 
 - [x] S4.1.1 — Dependencies install and existing tests pass locally
 - [x] S4.1.2 — CI runs on every PR
-- [ ] S1.1.1 — Typed page result
-- [ ] S1.1.2 — Backend registry; Baidu removed
-- [ ] S1.1.4 — Folder inputs expand to their files
-- [ ] S1.1.5 — `run_pipeline()` with skip-and-report
+- [x] S1.1.1 — Typed page result
+- [x] S1.1.2 — Backend registry; Baidu removed
+- [x] S1.1.4 — Folder inputs expand to their files
+- [x] S1.1.5 — `run_pipeline()` with skip-and-report
 - [ ] S1.2.1 — JSON and CSV from page results
 - [ ] S1.2.2 — CLI is a thin caller of `run_pipeline()`
 - [ ] Choose formatter and linter, and fill in `AGENTS.md` → Commands
@@ -148,7 +148,7 @@ gantt
 
     section Phase 1 — Clean core
     F4.1 Dev environment and CI   :done, f41, 2026-10-10 00:00, 1h
-    F1.1 Clean pipeline core      :f11, after f41, 4h
+    F1.1 Clean pipeline core      :done, f11, after f41, 4h
     F1.2 Export and CLI           :f12, after f11, 2h
     Phase 1 done                  :milestone, m1, after f12, 0h
 

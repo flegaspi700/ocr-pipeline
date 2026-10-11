@@ -1,6 +1,13 @@
 # ocr_pipeline
 
-A lightweight repository containing examples and utilities to build a scalable OCR pipeline using Baidu's Unlimited-OCR. This project focuses on processing high-resolution images and extracting text from multi-page PDFs, with components for image preprocessing, PDF rasterization, parallel inference, and result post-processing (JSON/CSV export). Ideal for document digitization, automated data extraction, and batch processing workflows.
+A small Python CLI and library that turns images and multi-page PDFs into
+per-page text as JSON or CSV: it rasterizes PDF pages, preprocesses each page
+(resize, grayscale, binarize), sends it to a pluggable OCR backend, and exports
+the results.
+
+**Status:** no OCR backend is installed yet. A free local engine is planned
+(Phase 2 in `docs/04-project-plan.md`); until then `ocr-pipeline` stops with
+"No OCR backend installed".
 
 
 ## Project target (current)

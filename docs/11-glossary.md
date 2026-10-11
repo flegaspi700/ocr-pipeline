@@ -19,7 +19,7 @@ keeps names consistent across the codebase (see the naming rules in
 | known text | The text a sample document really contains, saved next to it as `.txt`, used to judge OCR output. | "ground truth", "expected text", "answer key" |
 | line | One line of recognized text on a page, with its confidence. | "result", "item", "block" |
 | page | One image sent to OCR: an image file, or one rasterized page of a PDF. Numbered from 1. | "frame", "sheet" |
-| page result | The `PageResult` for one page: source file, page number, text, lines, and error (if it failed). | "result dict", "record", "output" |
+| page result | The `PageResult` for one page: source file, page number, text, lines, and error (if it failed). A file that fails to load gets one page result with no page number. | "result dict", "record", "output" |
 | run | One call of `run_pipeline()` (or the CLI / UI) over a set of input files and folders. | "job", "batch", "session" |
 | sample document | A generated file in `samples/` with no real personal data, used to test and judge OCR. | "fixture", "test doc" |
 | skip-and-report | When a file or page fails, record the error in its page result, log a warning, and keep going. | "fail-soft", "continue on error" |

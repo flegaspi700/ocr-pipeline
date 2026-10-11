@@ -9,6 +9,37 @@ at the end (see `AGENTS.md`).
 
 ---
 
+## 2026-10-11 — F1.1 Clean pipeline core built
+
+**Worked on:** `/story F1.1` — S1.1.1, S1.1.2, S1.1.4, S1.1.5 (S1.1.3 stays
+Dropped)
+
+**Time spent:** to be filled in at wrap-up
+
+**Changed:**
+- `models.py` (new) — `Line`, `PageResult`; `page=None` when a whole file
+  fails to load
+- `backend.py` — backend registry (`BACKENDS`, `get_backend()`); Baidu and
+  `requests` removed; `recognize()` returns `list[Line]`
+- `cli.py` — minimal change: backend from the registry, `--backend`
+  defaults to `local`; with no backend it stops with a usage error
+- `io.py` — `expand_inputs()` for folders (top level, sorted)
+- `pipeline.py` (new) — `run_pipeline()` with skip-and-report
+- Docs: README, AGENTS, vision, architecture (diagrams), tech stack,
+  glossary, threat model filled in (`14-security.md`), `.env.example`
+
+**Stopped at:** F1.1 Done on `feature/F1.1-clean-pipeline-core`, one commit
+per story; 29 tests pass. Not yet pushed, no PR.
+
+**Next step:** after the F1.1 PR is merged, `/story F1.2` (S1.2.1 export
+from `PageResult`, S1.2.2 CLI calls `run_pipeline()`).
+
+**Open questions:** Should `16-budget.md` drop to Optional now that no paid
+API is planned? Follow-up: PyMuPDF prints "`fitz` API is deprecated, use
+`import pymupdf`" on import.
+
+---
+
 ## 2026-10-10 — Session wrap-up: breakdown, F4.1 done, Phase 1 started
 
 **Worked on:** `/breakdown`, S4.1.1, S4.1.2 (F4.1 done), DoD report format

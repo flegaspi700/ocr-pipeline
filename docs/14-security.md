@@ -10,24 +10,35 @@ Security.
 Fill in during Phase 0/1; review at the end of each phase. It answers the
 four standard threat-modelling questions in a few lines each.
 
-**1. What are we building?** <one line — see `02-architecture.md` →
-System context for the diagram>
+**1. What are we building?** A local, offline CLI/library that reads image
+and PDF files I give it and writes per-page OCR text to a JSON or CSV file.
+No network calls and no secrets since S1.1.2 (Baidu removed). See
+`02-architecture.md` → System context.
 
 **2. What can go wrong?**
 
 | Asset (what's worth protecting) | Entry point (how it could be reached) | What could go wrong | Likelihood | Impact |
 |---|---|---|---|---|
-| <e.g. API key> | <e.g. committed to git> | <e.g. someone uses it and runs up a bill> | Low / Med / High | Low / Med / High |
-| <e.g. user's saved data> | <e.g. a file the app loads> | <e.g. a malformed file crashes it or runs code> | | |
+| My documents' text (personal data) | Logs and output files | Document text ends up in logs or somewhere unexpected | Low | Med |
+| The run itself | An input image or PDF, given directly or found in a folder I pass (corrupt or malicious) | A bad file crashes the whole run, or exploits a bug in Pillow / PyMuPDF | Med | Med |
+| My machine | Dependencies (Pillow, PyMuPDF) | A vulnerable or look-alike package runs code with my permissions | Low | High |
 
 Common entry points: files the app reads, network requests, user input,
 command-line arguments, environment variables, dependencies, and anything
 an AI agent reads (web pages, issues, docs).
 
-**3. What are we doing about it?** <for each Medium/High row: the
-mitigation, and the story or NFR ID that implements it>
+**3. What are we doing about it?**
+- Document text: never logged above DEBUG (NFR5); output goes only to the
+  path I choose.
+- Bad input file: folders expand to top-level image/PDF files only — no
+  recursion, other files skipped (S1.1.4); skip-and-report — the file becomes an error in its page
+  result and the run continues (NFR4, S1.1.5); file types checked by
+  extension before opening (`io.py`); keep Pillow / PyMuPDF up to date.
+- Dependencies: only well-known packages from PyPI, checked before adding
+  (see Dependencies below); dependency audit each phase end (NFR2).
 
-**4. Did it work?** <how it was checked — test, review, scan — and when>
+**4. Did it work?** Bad-file handling: tests in S1.1.5. Logging and audit:
+checked at the end of Phase 1 (not yet).
 
 ## Secrets
 
