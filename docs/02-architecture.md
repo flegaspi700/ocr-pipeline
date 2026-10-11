@@ -190,6 +190,7 @@ rejected options and reasoning are in the linked log entry.
 | Direction | Clean core + simple local UI (Option B) | Rewrite as a web app | UI library and accessibility work added | `05-decisions-log.md` → 2026-10-10 Next direction |
 | Phase order / backend | Refactor first; Baidu removed; local engine next | Working pipeline first; keep Baidu | No real OCR until Phase 2 | `05-decisions-log.md` → 2026-10-10 Phase order changed |
 | Formatter and linter | Ruff (format + lint) | Black + Flake8 | A younger tool | `05-decisions-log.md` → 2026-10-11 Formatter, linter and test runner |
+| Coverage and audit | `pytest-cov` + `pip-audit`, phase end only | Dependabot only, no coverage | Two more dev tools | `05-decisions-log.md` → 2026-10-11 Coverage and dependency audit tools |
 
 ## Non-goals
 

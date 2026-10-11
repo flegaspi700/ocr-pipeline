@@ -150,6 +150,30 @@ Trade-off accepted: relying on a younger tool, low risk for a trial.
 
 ---
 
+## 2026-10-11 — Coverage and dependency audit tools
+
+**Status:** Accepted
+
+**Context:** The Phase 1 end checks (`07-testing-checklist.md`) need a
+coverage report and a dependency audit; `AGENTS.md` → Commands had neither.
+
+**Options considered:**
+
+| Option | Pros | Cons | Cost |
+|---|---|---|---|
+| A: `pytest-cov` + `pip-audit` | Standard tools; `pytest-cov` plugs into pytest (one command); `pip-audit` maintained by PyPA, audits what's actually installed | Two more dev tools | $0 |
+| B: `coverage.py` directly + `pip-audit` | One fewer plugin | Two commands for coverage | $0 |
+| C: No coverage; Dependabot only | Nothing to install | Checklist asks for both; Dependabot sees only declared deps, and is off for this repo | $0 |
+
+**Decision:** Option A. `pytest-cov==7.1.0` (pytest-dev) and
+`pip-audit==2.10.1` (PyPA), both verified on PyPI before installing. Run
+locally at each phase end, not in CI.
+
+**Why:** Smallest standard setup that meets the phase-end checklist.
+Trade-off accepted: two more dev tools, used only at phase end.
+
+---
+
 ## Template for new entries
 
 ```

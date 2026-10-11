@@ -188,3 +188,28 @@ def test_output_goes_through_logging_and_text_never_above_debug(
         if r.levelno > logging.DEBUG and "SECRET-DOC-TEXT" in r.getMessage()
     ]
     assert leaked == []
+
+
+def test_corrupt_file_is_reported_without_stopping_the_run(
+    tmp_path: Path, fake_registry: None
+) -> None:
+    """Phase 1 exit criterion, end to end through the CLI."""
+    good = make_image(tmp_path / "good.png")
+    corrupt = tmp_path / "corrupt.pdf"
+    corrupt.write_bytes(b"not a pdf")
+    output = tmp_path / "results.csv"
+
+    code = cli.main(
+        [str(corrupt), str(good), "--output", str(output), "--format", "csv"]
+        + ["--backend", "fake"]
+    )
+
+    with open(output, encoding="utf-8-sig", newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    assert code == 1
+    assert [Path(row["source_file"]).name for row in rows] == [
+        "corrupt.pdf",
+        "good.png",
+    ]
+    assert rows[0]["error"] and rows[0]["page"] == ""
+    assert rows[1]["error"] == "" and rows[1]["text"] == "hello\nworld"

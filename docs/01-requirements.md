@@ -97,11 +97,11 @@ at each phase end (`07-testing-checklist.md`).
 | ID | Category | Requirement (measurable) | How verified | Status |
 |---|---|---|---|---|
 | NFR1 | Performance | The 5 sample pages (`samples/`) finish in under 60 s on this machine with the local engine | Timed CLI run in S2.2.3, each phase end | Not met yet |
-| NFR2 | Security | No known high-severity vulnerabilities in dependencies | Dependency audit + Dependabot, each phase end (`14-security.md`) | Not met yet |
+| NFR2 | Security | No known high-severity vulnerabilities in dependencies | Dependency audit + Dependabot, each phase end (`14-security.md`) | Met (2026-10-11): `pip-audit` clean after upgrading the venv's pip; Dependabot alerts are off for the repo |
 | NFR3 | Accessibility | The local web UI meets the "Apps and websites" checklist in `15-accessibility.md` (WCAG 2.2 AA, where the UI library allows) | Manual pass per `15-accessibility.md` | Not met yet |
-| NFR4 | Reliability | One bad input file never stops a run: it is reported as an error and the other pages still finish | Test in S1.1.5 + manual run with a corrupt file | Not met yet |
-| NFR5 | Privacy | OCR runs fully offline (no network calls), and document text is never logged above DEBUG | Tests in S1.2.2 / S2.2.2 + review of logs | Not met yet |
-| NFR6 | Cost | Monthly spend $0: free, local tools only (`16-budget.md`) | Monthly log in `16-budget.md` | Not met yet |
+| NFR4 | Reliability | One bad input file never stops a run: it is reported as an error and the other pages still finish | Test in S1.1.5 + manual run with a corrupt file | Not met yet: tests pass through `run_pipeline()` and the CLI (2026-10-11); manual run waits for a real backend (Phase 2) |
+| NFR5 | Privacy | OCR runs fully offline (no network calls), and document text is never logged above DEBUG | Tests in S1.2.2 / S2.2.2 + review of logs | Not met yet: no network code or library since S1.1.2, log test passes (2026-10-11); local engine checked in S2.2.2 |
+| NFR6 | Cost | Monthly spend $0: free, local tools only (`16-budget.md`) | Monthly log in `16-budget.md` | Met (2026-10-11): $0 so far, free tools only, public repo so Actions is free; monthly log starts 2026-11 |
 
 **Statuses:** `Not met yet` · `Met` (with date last verified) · `At risk`
 

@@ -32,13 +32,14 @@ Existing stack, recorded as found in the repo (see `05-decisions-log.md` →
 | <editor> | Primary editor |
 | Ruff | Formatting (`ruff format`, Black-compatible) and linting (`ruff check`: defaults + import sorting); config in `pyproject.toml` → `[tool.ruff]`. No type checker yet |
 | pytest | Tests (`tests/`, a fake backend registered with `monkeypatch`) |
-| <coverage tool> | Coverage report (a hint, no target %) — not set up yet |
-| <dependency audit tool, e.g. pip-audit> | Known vulnerabilities in dependencies (`14-security.md`) — not set up yet |
+| pytest-cov | Coverage report (a hint, no target %): `pytest --cov=ocr_pipeline --cov-report=term-missing`; phase end, local only |
+| pip-audit | Known vulnerabilities in the venv's installed packages (`14-security.md`); phase end, local only |
 | venv (`.venv/`, git-ignored) | Dependency isolation |
 | GitHub Actions (`.github/workflows/python.yml`) | CI: `pip install -e .`, then `pytest`, `ruff check .` and `ruff format --check .` on windows-latest, Python 3.13, on push/PR to `main` |
 
 **Local setup (verified 2026-10-10, S4.1.1):** `python -m venv .venv` with
-Python 3.13, then `pip install -e .` and `pip install pytest ruff==0.17.0` inside it. No
+Python 3.13, then `pip install -e .` and `pip install pytest ruff==0.17.0 pytest-cov==7.1.0 pip-audit==2.10.1`
+inside it. No
 machine setting was needed: no pip config, proxy, or custom certificates.
 The earlier `SSLV3_ALERT_HANDSHAKE_FAILURE` from `files.pythonhosted.org`
 (`review_notes.md`) no longer reproduces, even with `--no-cache-dir`; it
@@ -55,7 +56,7 @@ PyMuPDF>=1.22.0
 
 (`requests` was removed with the Baidu backend in S1.1.2.)
 
-Dev: `pytest` and `ruff==0.17.0` (pinned so local and CI format the same), installed separately locally and in CI; neither is declared in `pyproject.toml`.
+Dev: `pytest` and `ruff==0.17.0` (pinned so local and CI format the same), installed separately locally and in CI; `pytest-cov==7.1.0` and `pip-audit==2.10.1`, local only for phase-end checks. None are declared in `pyproject.toml`.
 
 ## Deferred / not needed yet
 

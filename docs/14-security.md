@@ -37,8 +37,13 @@ an AI agent reads (web pages, issues, docs).
 - Dependencies: only well-known packages from PyPI, checked before adding
   (see Dependencies below); dependency audit each phase end (NFR2).
 
-**4. Did it work?** Bad-file handling: tests in S1.1.5. Logging and audit:
-checked at the end of Phase 1 (not yet).
+**4. Did it work?** Checked at the end of Phase 1 (2026-10-11): bad-file
+handling tested through `run_pipeline()` and the CLI; a test confirms
+document text is never logged above DEBUG; `pip-audit` clean (after
+upgrading the venv's pip, PYSEC-2026-3721). Threat model still accurate: no
+new entry points beyond folder input (S1.1.4). Dependabot alerts are off and
+secret-scanning alerts weren't readable with the current `gh` login — check
+on GitHub.
 
 ## Secrets
 
