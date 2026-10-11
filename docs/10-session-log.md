@@ -9,11 +9,41 @@ at the end (see `AGENTS.md`).
 
 ---
 
+## 2026-10-10 — Session wrap-up: breakdown, F4.1 done, Phase 1 started
+
+**Worked on:** `/breakdown`, S4.1.1, S4.1.2 (F4.1 done), DoD report format
+
+**Time spent:** ~1h (whole session; the two entries below are part of it)
+
+**Changed:**
+- PR #2 — requirements breakdown: epics E1–E4, Phase 1–2 stories, NFRs,
+  hour-based plan, "Phase order changed" decision, glossary
+- PR #3 — S4.1.1: SSL error no longer reproduces; setup in `03-tech-stack.md`
+- PR #4 — DoD report table format in `01-requirements.md` + `/story` skill
+- PR #6 — S4.1.2: CI shown green (PR #4) and red (throwaway PR #5, closed)
+- This entry — `04-project-plan.md`: Phase 1 marked In progress (started
+  2026-10-10), S4.1.1/S4.1.2 ticked, F4.1 bar marked done
+
+**Stopped at:** `main` clean and in sync; 8 tests pass locally and in CI.
+F4.1 Done. All F1.1 / F1.2 stories are Ready; none started.
+
+**Next step:** `/story S1.1.1` — write tests for a `PageResult` dataclass in
+`tests/test_models.py` (fields `source_file`, `page`, `text`, `lines`,
+`error`; empty page → `text == ""`, `lines == []`), see them fail, then
+create `src/ocr_pipeline/models.py`.
+
+**Open questions:** None. Protect `main`? Decided no — solo personal
+project; revisit if collaborators get write access or an agent may merge.
+Follow-up (not urgent): Pillow `getdata` deprecation in
+`tests/test_io_and_preprocess.py:58` (removed in Pillow 14, 2027-10).
+
+---
+
 ## 2026-10-10 — S4.1.2 CI verified; F4.1 done
 
 **Worked on:** S4.1.2 (also PR #4: DoD report table format)
 
-**Time spent:** not recorded — fill in at `/wrap-up`
+**Time spent:** counted in the wrap-up entry above
 
 **Changed:**
 - `docs/01-requirements.md` — S4.1.2 and F4.1 Done, with CI evidence
@@ -36,7 +66,7 @@ test-first.
 
 **Worked on:** `/breakdown` (PR #2, merged), S4.1.1
 
-**Time spent:** not recorded — fill in at `/wrap-up`
+**Time spent:** counted in the wrap-up entry above
 
 **Changed:**
 - `docs/01-requirements.md`, `04-project-plan.md`, `05-decisions-log.md`,
