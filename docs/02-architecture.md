@@ -154,7 +154,8 @@ rejected options and reasoning are in the linked log entry.
 
 | Area | Chosen | Main alternative rejected | Trade-off accepted | Decision |
 |---|---|---|---|---|
-| <e.g. Storage> | <e.g. JSON files> | <e.g. SQLite> | <e.g. no querying across runs> | <link to `05-decisions-log.md` entry> |
+| Direction | Clean core + simple local UI (Option B) | Rewrite as a web app | UI library and accessibility work added | `05-decisions-log.md` → 2026-10-10 Next direction |
+| Phase order / backend | Refactor first; Baidu removed; local engine next | Working pipeline first; keep Baidu | No real OCR until Phase 2 | `05-decisions-log.md` → 2026-10-10 Phase order changed |
 
 ## Non-goals
 
