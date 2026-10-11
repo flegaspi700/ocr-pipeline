@@ -10,10 +10,15 @@ class FakeBackend(OCRBackend):
     Records the PNG bytes of every page it was sent in `pages`.
     """
 
-    def __init__(self, fail_on: tuple[int, ...] = (), lines: list[Line] | None = None) -> None:
+    def __init__(
+        self, fail_on: tuple[int, ...] = (), lines: list[Line] | None = None
+    ) -> None:
         self.calls = 0
         self.fail_on = fail_on
-        self.lines = lines or [Line(text="hello", confidence=0.9), Line(text="world", confidence=0.8)]
+        self.lines = lines or [
+            Line(text="hello", confidence=0.9),
+            Line(text="world", confidence=0.8),
+        ]
         self.pages: list[bytes] = []
 
     def recognize(self, image_bytes: bytes) -> list[Line]:

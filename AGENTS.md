@@ -258,13 +258,13 @@ exact commands — don't guess or invent alternatives.
 
 | Task | Command |
 |---|---|
-| Install (dev) | `pip install -e .` then `pip install pytest` |
+| Install (dev) | `pip install -e .` then `pip install pytest ruff==0.17.0` |
 | Run the app | `ocr-pipeline <files or folders...> --output results.json [--format json\|csv] [--backend <name>]` |
 | Run all tests | `pytest` |
 | Run one test file | `pytest tests/<file>.py` |
 | Coverage report | `<command>` |
-| Lint | `<command>` |
-| Format | `<command>` |
+| Lint | `ruff check .` (auto-fix: `ruff check . --fix`) |
+| Format | `ruff format .` (check only: `ruff format --check .`) |
 | Dependency audit | `<command>` |
 
 ## Testing expectations

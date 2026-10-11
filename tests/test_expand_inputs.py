@@ -48,7 +48,9 @@ def test_empty_folder_as_only_input_is_an_error_naming_it(tmp_path: Path) -> Non
         expand_inputs([folder])
 
 
-def test_folder_without_supported_files_as_only_input_is_an_error(tmp_path: Path) -> None:
+def test_folder_without_supported_files_as_only_input_is_an_error(
+    tmp_path: Path,
+) -> None:
     folder = tmp_path / "text_only"
     touch(folder / "notes.txt")
 

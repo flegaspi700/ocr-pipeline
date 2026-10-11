@@ -1,5 +1,6 @@
-import fitz
 from pathlib import Path
+
+import fitz
 from PIL import Image
 
 from ocr_pipeline.io import is_image_file, load_image, rasterize_pdf

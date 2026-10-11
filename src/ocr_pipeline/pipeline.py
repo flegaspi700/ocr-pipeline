@@ -9,9 +9,9 @@ added in S1.2.2 so the CLI options keep working.
 """
 
 import logging
+from collections.abc import Iterable
 from io import BytesIO
 from pathlib import Path
-from typing import Iterable
 
 from PIL import Image
 
@@ -41,7 +41,9 @@ def run_pipeline(
     """
     paths = list(paths)
     if not paths:
-        raise ValueError("No input files given. Pass at least one image, PDF or folder.")
+        raise ValueError(
+            "No input files given. Pass at least one image, PDF or folder."
+        )
 
     results: list[PageResult] = []
     for path in expand_inputs(paths):
@@ -54,11 +56,15 @@ def run_pipeline(
         except Exception as error:
             logger.warning("Skipping file %s: %s", source_file, error)
             logger.debug("Load failure details for %s", source_file, exc_info=True)
-            results.append(PageResult(source_file=source_file, page=None, error=str(error)))
+            results.append(
+                PageResult(source_file=source_file, page=None, error=str(error))
+            )
             continue
 
         for page_number, image in enumerate(pages, start=1):
-            results.append(ocr_page(source_file, page_number, image, backend, threshold))
+            results.append(
+                ocr_page(source_file, page_number, image, backend, threshold)
+            )
 
     failed = sum(1 for result in results if result.error)
     logger.info("Run finished: %d page results, %d with errors", len(results), failed)
@@ -71,7 +77,9 @@ def load_pages(path: Path, dpi: int) -> list[Image.Image]:
         return [load_image(path)]
     if path.suffix.lower() == ".pdf":
         return rasterize_pdf(path, dpi=dpi)
-    raise ValueError(f"Unsupported file type '{path.suffix}'. Use an image or PDF file.")
+    raise ValueError(
+        f"Unsupported file type '{path.suffix}'. Use an image or PDF file."
+    )
 
 
 def ocr_page(
@@ -86,7 +94,9 @@ def ocr_page(
     # failure must not stop the others (NFR4).
     except Exception as error:
         logger.warning("OCR failed on %s page %d: %s", source_file, page, error)
-        logger.debug("OCR failure details for %s page %d", source_file, page, exc_info=True)
+        logger.debug(
+            "OCR failure details for %s page %d", source_file, page, exc_info=True
+        )
         return PageResult(source_file=source_file, page=page, error=str(error))
 
     return PageResult(

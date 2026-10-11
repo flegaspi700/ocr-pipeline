@@ -74,8 +74,8 @@ Start simple and split when there's a reason, not upfront.
 
 ## Style
 
-- Format with <formatter>, lint with <linter> — see
-  `05-decisions-log.md`
+- Format with Ruff (`ruff format .`), lint with Ruff (`ruff check .`) — see
+  `05-decisions-log.md`. Both must be clean before a commit.
 - Keep functions short — if a function does two jobs, split it into two
 
 ## Notes and comments

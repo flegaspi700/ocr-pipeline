@@ -8,11 +8,11 @@ expansion added for S1.1.4.
 
 import io
 import logging
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable, List
 
-from PIL import Image
 import fitz
+from PIL import Image
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +43,9 @@ def expand_inputs(paths: Iterable[Path]) -> list[Path]:
     empty_folders: list[Path] = []
     for path in paths:
         if not path.exists():
-            raise FileNotFoundError(f"Input not found: {path}. Check the path and try again.")
+            raise FileNotFoundError(
+                f"Input not found: {path}. Check the path and try again."
+            )
         if not path.is_dir():
             expanded.append(path)
             continue
@@ -65,7 +67,9 @@ def expand_inputs(paths: Iterable[Path]) -> list[Path]:
             "Add .png, .jpg, .tif, .bmp, .gif or .pdf files, or pass the files directly."
         )
     for folder in empty_folders:
-        logger.warning("Skipping folder %s: empty or no supported image or PDF files", folder)
+        logger.warning(
+            "Skipping folder %s: empty or no supported image or PDF files", folder
+        )
     return expanded
 
 
@@ -77,14 +81,14 @@ def load_image(path: Path) -> Image.Image:
     return Image.open(path).convert("RGB")
 
 
-def rasterize_pdf(path: Path, dpi: int = 200) -> List[Image.Image]:
+def rasterize_pdf(path: Path, dpi: int = 200) -> list[Image.Image]:
     if not path.is_file():
         raise FileNotFoundError(f"PDF file not found: {path}")
     if path.suffix.lower() != ".pdf":
         raise ValueError(f"Unsupported PDF file type: {path}")
 
     document = fitz.open(path)
-    images: List[Image.Image] = []
+    images: list[Image.Image] = []
     matrix = fitz.Matrix(dpi / 72, dpi / 72)
 
     for page in document:

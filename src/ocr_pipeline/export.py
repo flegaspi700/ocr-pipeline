@@ -21,7 +21,9 @@ def export_to_json(results: list[PageResult], output_path: Path) -> None:
     """Write `results` as a JSON list of page results with all fields (`[]` if empty)."""
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as handle:
-        json.dump([asdict(result) for result in results], handle, ensure_ascii=False, indent=2)
+        json.dump(
+            [asdict(result) for result in results], handle, ensure_ascii=False, indent=2
+        )
 
 
 def export_to_csv(results: list[PageResult], output_path: Path) -> None:
@@ -37,10 +39,14 @@ def export_to_csv(results: list[PageResult], output_path: Path) -> None:
         writer = csv.DictWriter(handle, fieldnames=CSV_COLUMNS)
         writer.writeheader()
         for result in results:
-            writer.writerow({
-                "source_file": result.source_file,
-                "page": result.page,
-                "text": result.text,
-                "confidence": fmean(line.confidence for line in result.lines) if result.lines else None,
-                "error": result.error,
-            })
+            writer.writerow(
+                {
+                    "source_file": result.source_file,
+                    "page": result.page,
+                    "text": result.text,
+                    "confidence": fmean(line.confidence for line in result.lines)
+                    if result.lines
+                    else None,
+                    "error": result.error,
+                }
+            )

@@ -14,10 +14,15 @@ def sample_results() -> list[PageResult]:
             source_file="scan.pdf",
             page=1,
             text="Hello\nworld",
-            lines=[Line(text="Hello", confidence=0.9), Line(text="world", confidence=0.7)],
+            lines=[
+                Line(text="Hello", confidence=0.9),
+                Line(text="world", confidence=0.7),
+            ],
         ),
         PageResult(source_file="blank.png", page=1),
-        PageResult(source_file="broken.pdf", page=None, error="cannot open broken document"),
+        PageResult(
+            source_file="broken.pdf", page=None, error="cannot open broken document"
+        ),
     ]
 
 
@@ -36,7 +41,10 @@ def test_json_is_a_list_of_page_results_with_all_fields(tmp_path: Path) -> None:
         "source_file": "scan.pdf",
         "page": 1,
         "text": "Hello\nworld",
-        "lines": [{"text": "Hello", "confidence": 0.9}, {"text": "world", "confidence": 0.7}],
+        "lines": [
+            {"text": "Hello", "confidence": 0.9},
+            {"text": "world", "confidence": 0.7},
+        ],
         "error": None,
     }
     assert payload[2]["page"] is None
@@ -85,7 +93,9 @@ def test_empty_results_give_headers_only_csv_and_empty_json(tmp_path: Path) -> N
     export_to_json([], json_path)
 
     with open(csv_path, encoding="utf-8-sig", newline="") as handle:
-        assert list(csv.reader(handle)) == [["source_file", "page", "text", "confidence", "error"]]
+        assert list(csv.reader(handle)) == [
+            ["source_file", "page", "text", "confidence", "error"]
+        ]
     assert json.loads(json_path.read_text(encoding="utf-8")) == []
 
 

@@ -8,7 +8,7 @@ Built for S1.1.2.
 """
 
 import abc
-from typing import Callable
+from collections.abc import Callable
 
 from .models import Line
 
@@ -38,5 +38,7 @@ def get_backend(name: str) -> OCRBackend:
         )
     if name not in BACKENDS:
         available = ", ".join(sorted(BACKENDS))
-        raise ValueError(f"Unknown OCR backend '{name}'. Available backends: {available}.")
+        raise ValueError(
+            f"Unknown OCR backend '{name}'. Available backends: {available}."
+        )
     return BACKENDS[name]()
