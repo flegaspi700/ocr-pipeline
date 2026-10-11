@@ -119,7 +119,7 @@ at each phase end (`07-testing-checklist.md`).
 | F3.3 | Page and text side by side, plus JSON/CSV download | Feature | 3 | Backlog |
 | E4 | Safe to change | Epic | 1 | Backlog |
 | F4.1 | Working dev environment and CI | Feature | 1 | Ready |
-| S4.1.1 | Dependencies install and existing tests pass locally | Story | 1 | Ready |
+| S4.1.1 | Dependencies install and existing tests pass locally | Story | 1 | Done |
 | S4.1.2 | CI runs on every PR | Story | 1 | Ready |
 
 Build order in Phase 1: F4.1 first (nothing can be tested before it), then
@@ -455,16 +455,21 @@ decision in `05-decisions-log.md`).
 test-first work is possible (riskiest assumption in `05-decisions-log.md`).
 
 **Component:** environment / `pyproject.toml`
-**Status:** Ready
+**Status:** Done
 
 **Acceptance criteria:**
-- [ ] Given a fresh venv, when `pip install -e .` and `pip install pytest`
+- [x] Given a fresh venv, when `pip install -e .` and `pip install pytest`
       run, then both finish without the SSL handshake error
-- [ ] Given the installed package, when `pytest` runs, then all existing
+- [x] Given the installed package, when `pytest` runs, then all existing
       tests pass and the output has been seen
-- [ ] Given the fix needs a machine setting (proxy, certificates), then it
+- [x] Given the fix needs a machine setting (proxy, certificates), then it
       is written down in `03-tech-stack.md` — no `--trusted-host` or
       certificate-verification bypass
+
+**Notes:** Done 2026-10-10. The SSL error no longer reproduces: a fresh
+`.venv` (Python 3.13) installed everything over HTTPS with `--no-cache-dir`,
+with no machine setting needed; 8/8 existing tests pass. Recorded in
+`03-tech-stack.md` → Local setup.
 
 #### S4.1.2 — CI runs on every PR
 

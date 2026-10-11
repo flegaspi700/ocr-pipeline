@@ -78,15 +78,15 @@ creep, including from AI agents.
   free quota — limits and tracking in `16-budget.md`
 - **Platform / environment:** Windows 11, runs locally; Python 3.11+ (CI
   tests on 3.13, Windows)
-- **Other:** pip install has failed here with an SSL handshake error — must
-  be fixed before tests can run. API keys never committed; they go in
-  environment variables / `.env`.
+- **Other:** pip install once failed here with an SSL handshake error; it
+  no longer reproduces (2026-10-10, see `03-tech-stack.md`). API keys never
+  committed; they go in environment variables / `.env`.
 
 ## Assumptions and risks
 
 - **Assumption:** the dependencies (Pillow, PyMuPDF, requests) install and
-  the existing tests pass → check first: fix the pip SSL issue, run
-  `pytest`.
+  the existing tests pass → **confirmed 2026-10-10** (S4.1.1): clean
+  install in a fresh venv, all 8 existing tests pass.
 - **Assumption:** Baidu's OCR API is reachable and usable from here within
   a free tier, and its real request format can be matched (the current code
   guesses it) → check with one real call on one sample image before
