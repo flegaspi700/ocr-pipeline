@@ -102,8 +102,7 @@ files, sorted by name (other files and subfolders skipped at DEBUG; a
 folder with nothing supported is an error if it's the only input, else a
 warning; a missing path is an error). Validates paths and file types (`.jpg .jpeg .png .tiff .tif .bmp .gif`,
 `.pdf`). Loads images as RGB with Pillow; rasterizes each PDF page with
-PyMuPDF at the given DPI. `load_inputs()` (a list of `(source path,
-image)`) is no longer used by the pipeline.
+PyMuPDF at the given DPI.
 
 ### preprocess.py
 Resizes to fit within 2200×3200 (never upscales), converts to grayscale,

@@ -32,8 +32,8 @@ Not yet pushed, no PR. Phase 1 still has the formatter/linter task left.
 **Next step:** after the F1.2 PR is merged: choose formatter and linter
 (last Phase 1 task), then the Phase 1 end checks (`07-testing-checklist.md`).
 
-**Open questions:** `io.load_inputs()` is now unused — remove it and its
-test `test_load_inputs_mixed`? (needs your OK to delete a test).
+**Open questions:** None. `io.load_inputs()` (unused after S1.2.2) and its
+test `test_load_inputs_mixed` were removed with the user's OK.
 
 ---
 

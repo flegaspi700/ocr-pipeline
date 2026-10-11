@@ -2,7 +2,7 @@
 
 The boundary where user-given paths enter the pipeline: checks that paths
 exist and have a supported type, then turns each file into RGB page images
-for preprocessing. Called by the CLI (and `run_pipeline()`). Folder
+for preprocessing. Called by `run_pipeline()`. Folder
 expansion added for S1.1.4.
 """
 
@@ -93,17 +93,3 @@ def rasterize_pdf(path: Path, dpi: int = 200) -> List[Image.Image]:
         images.append(Image.open(io.BytesIO(image_bytes)).convert("RGB"))
 
     return images
-
-
-def load_inputs(paths: Iterable[Path], dpi: int = 200) -> List[tuple[Path, Image.Image]]:
-    loaded = []
-    for path in paths:
-        if is_image_file(path):
-            loaded.append((path, load_image(path)))
-        elif path.suffix.lower() == ".pdf":
-            for index, image in enumerate(rasterize_pdf(path, dpi=dpi), start=1):
-                page_path = Path(f"{path.stem}_page_{index}.png")
-                loaded.append((page_path, image))
-        else:
-            raise ValueError(f"Unsupported input file: {path}")
-    return loaded

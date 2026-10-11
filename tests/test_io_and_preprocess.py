@@ -2,7 +2,7 @@ import fitz
 from pathlib import Path
 from PIL import Image
 
-from ocr_pipeline.io import is_image_file, load_image, load_inputs, rasterize_pdf
+from ocr_pipeline.io import is_image_file, load_image, rasterize_pdf
 from ocr_pipeline.preprocess import binarize, resize_to_fit
 
 
@@ -29,22 +29,6 @@ def test_load_image_and_rasterize_pdf(tmp_path: Path) -> None:
     pages = rasterize_pdf(pdf_path, dpi=72)
     assert len(pages) == 1
     assert pages[0].mode == "RGB"
-
-
-def test_load_inputs_mixed(tmp_path: Path) -> None:
-    image_path = tmp_path / "page.png"
-    Image.new("RGB", (50, 50), color="white").save(image_path)
-
-    pdf_path = tmp_path / "sample.pdf"
-    doc = fitz.open()
-    doc.new_page(width=200, height=100)
-    doc.save(str(pdf_path))
-    doc.close()
-
-    loaded = load_inputs([image_path, pdf_path], dpi=72)
-    assert len(loaded) == 2
-    assert loaded[0][0].name == "page.png"
-    assert loaded[1][0].suffix == ".png"
 
 
 def test_binarize_and_resize() -> None:
