@@ -60,7 +60,7 @@ with no real logic yet.
 - [x] S1.1.2 — Backend registry; Baidu removed
 - [x] S1.1.4 — Folder inputs expand to their files
 - [x] S1.1.5 — `run_pipeline()` with skip-and-report
-- [ ] S1.2.1 — JSON and CSV from page results
+- [x] S1.2.1 — JSON and CSV from page results
 - [ ] S1.2.2 — CLI is a thin caller of `run_pipeline()`
 - [ ] Choose formatter and linter, and fill in `AGENTS.md` → Commands
       (setup task, pending entry in `05-decisions-log.md`)

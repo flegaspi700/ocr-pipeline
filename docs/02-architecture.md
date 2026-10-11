@@ -119,16 +119,18 @@ Typed data passed between components: `Line` (`text`, `confidence`) and
 is None when the whole file failed to load.
 
 ### export.py
-`export_to_json` writes the results list as-is (UTF-8, indented).
-`export_to_csv` writes one row per page with the top-level keys as columns.
+Both take `list[PageResult]` and create the output folder if needed.
+`export_to_json` writes a list of page results with every field, lines
+included (UTF-8, indented; `[]` when empty). `export_to_csv` writes one row
+per page with columns `source_file, page, text, confidence, error`, where
+`confidence` is the mean over the page's lines (empty if none). It's
+UTF-8 with a byte-order mark so Excel reads non-ASCII text; an empty list
+writes the header only.
 
 ### Known gaps
 
-- Pages are processed one at a time — no parallel inference yet (the README
-  mentions it).
+- Pages are processed one at a time — no parallel inference.
 - All pages of all inputs are loaded into memory before OCR starts.
-- CSV export writes each page's nested `results` list as a single string
-  column.
 
 ## Data flow contract
 
@@ -138,8 +140,7 @@ is None when the whole file failed to load.
 - **preprocess → backend:** PNG-encoded `bytes` of a grayscale, binarized
   image.
 - **backend → cli:** `list[Line]`, in reading order.
-- **cli → export:** `list[{"source": str, "results": list[dict]}]`, one
-  entry per page (each `Line` as a dict) — moves to `PageResult` in F1.2.
+- **cli → export:** `list[PageResult]`, one per page.
 
 ## Design options and trade-offs
 
