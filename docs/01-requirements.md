@@ -114,7 +114,7 @@ at each phase end (`07-testing-checklist.md`).
 | S1.1.1 | Typed page result | Story | 1 | Done |
 | S1.1.2 | Backend registry; Baidu removed | Story | 1 | Done |
 | S1.1.3 | Pages loaded one at a time | Story | 1 | Dropped |
-| S1.1.4 | Folder inputs expand to their files | Story | 1 | In progress |
+| S1.1.4 | Folder inputs expand to their files | Story | 1 | Done |
 | S1.1.5 | `run_pipeline()` with skip-and-report | Story | 1 | In progress |
 | F1.2 | Export and CLI on the core | Feature | 1 | Ready |
 | S1.2.1 | JSON and CSV from page results | Story | 1 | Ready |
@@ -220,18 +220,18 @@ small. Revisit if a large PDF runs out of memory (risk in `00-vision.md`).
 file, so that I can OCR a batch in one command.
 
 **Component:** `src/ocr_pipeline/io.py`
-**Status:** In progress
+**Status:** Done
 
 **Acceptance criteria:**
-- [ ] Given a folder with images, PDFs and a `.txt`, when it is expanded,
+- [x] Given a folder with images, PDFs and a `.txt`, when it is expanded,
       then the supported files come back in sorted order and the `.txt` is
       skipped with a debug log
-- [ ] Given a folder with subfolders, when it is expanded, then files in
+- [x] Given a folder with subfolders, when it is expanded, then files in
       subfolders are ignored (top level only)
-- [ ] Given an empty folder or one with no supported files, when it is the
+- [x] Given an empty folder or one with no supported files, when it is the
       only input, then a clear error names the folder; when other inputs
       exist, a warning is logged and the run continues
-- [ ] Given a path that doesn't exist, when it is expanded, then the error
+- [x] Given a path that doesn't exist, when it is expanded, then the error
       names the path
 
 #### S1.1.5 — `run_pipeline()` with skip-and-report

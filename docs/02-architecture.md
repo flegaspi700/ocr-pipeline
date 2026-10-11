@@ -76,7 +76,10 @@ load → preprocess → encode PNG → recognize → collect → export. Entry p
 for the `ocr-pipeline` console script.
 
 ### io.py
-Validates paths and file types (`.jpg .jpeg .png .tiff .tif .bmp .gif`,
+`expand_inputs(paths)` replaces each folder with its top-level image and PDF
+files, sorted by name (other files and subfolders skipped at DEBUG; a
+folder with nothing supported is an error if it's the only input, else a
+warning; a missing path is an error). Validates paths and file types (`.jpg .jpeg .png .tiff .tif .bmp .gif`,
 `.pdf`). Loads images as RGB with Pillow; rasterizes each PDF page with
 PyMuPDF at the given DPI. Returns a list of `(source path, image)` — PDF
 pages get a synthetic `<stem>_page_<n>.png` source name.

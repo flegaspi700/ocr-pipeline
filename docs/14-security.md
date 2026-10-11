@@ -20,7 +20,7 @@ No network calls and no secrets since S1.1.2 (Baidu removed). See
 | Asset (what's worth protecting) | Entry point (how it could be reached) | What could go wrong | Likelihood | Impact |
 |---|---|---|---|---|
 | My documents' text (personal data) | Logs and output files | Document text ends up in logs or somewhere unexpected | Low | Med |
-| The run itself | An input image or PDF (corrupt or malicious) | A bad file crashes the whole run, or exploits a bug in Pillow / PyMuPDF | Med | Med |
+| The run itself | An input image or PDF, given directly or found in a folder I pass (corrupt or malicious) | A bad file crashes the whole run, or exploits a bug in Pillow / PyMuPDF | Med | Med |
 | My machine | Dependencies (Pillow, PyMuPDF) | A vulnerable or look-alike package runs code with my permissions | Low | High |
 
 Common entry points: files the app reads, network requests, user input,
@@ -30,7 +30,8 @@ an AI agent reads (web pages, issues, docs).
 **3. What are we doing about it?**
 - Document text: never logged above DEBUG (NFR5); output goes only to the
   path I choose.
-- Bad input file: skip-and-report — the file becomes an error in its page
+- Bad input file: folders expand to top-level image/PDF files only — no
+  recursion, other files skipped (S1.1.4); skip-and-report — the file becomes an error in its page
   result and the run continues (NFR4, S1.1.5); file types checked by
   extension before opening (`io.py`); keep Pillow / PyMuPDF up to date.
 - Dependencies: only well-known packages from PyPI, checked before adding
