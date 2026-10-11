@@ -54,8 +54,8 @@ with no real logic yet.
 `run_pipeline()` with typed results that the CLI calls.
 **Delivers:** F4.1, F1.1, F1.2
 
-- [ ] S4.1.1 — Dependencies install and existing tests pass locally
-- [ ] S4.1.2 — CI runs on every PR
+- [x] S4.1.1 — Dependencies install and existing tests pass locally
+- [x] S4.1.2 — CI runs on every PR
 - [ ] S1.1.1 — Typed page result
 - [ ] S1.1.2 — Backend registry; Baidu removed
 - [ ] S1.1.4 — Folder inputs expand to their files
@@ -115,7 +115,7 @@ estimate and actual is what makes estimates better next time.
 | Phase | Status | Estimate (h) | Actual (h) | Actual start | Actual end |
 |---|---|---|---|---|---|
 | 0 — Environment setup | Done | — | — | — | 2026-10-10 (existing scaffold) |
-| 1 — Clean core | Not started | 8 | | | |
+| 1 — Clean core | In progress | 8 | ~1 so far (incl. breakdown) | 2026-10-10 | |
 | 2 — Real OCR, local engine | Not started | 6 | | | |
 | 3 — Local web UI | Not started | 6 | | | |
 | 4 — Tuning | Not started | Ongoing | | | |
@@ -147,7 +147,7 @@ gantt
     axisFormat %Hh
 
     section Phase 1 — Clean core
-    F4.1 Dev environment and CI   :crit, f41, 2026-10-10 00:00, 2h
+    F4.1 Dev environment and CI   :done, f41, 2026-10-10 00:00, 1h
     F1.1 Clean pipeline core      :f11, after f41, 4h
     F1.2 Export and CLI           :f12, after f11, 2h
     Phase 1 done                  :milestone, m1, after f12, 0h
