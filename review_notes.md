@@ -11,6 +11,10 @@ This repository was scaffolded with a Python OCR pipeline package structure and 
 - `review_notes.md` this file
 
 ## Current status
+- **Update 2026-10-10 (S4.1.1):** the SSL error below no longer reproduces.
+  A fresh `.venv` installs cleanly and all 8 tests pass. Setup notes are in
+  `docs/03-tech-stack.md`. The rest of this file is the original review,
+  kept for history.
 - Code scaffold and repository structure are complete.
 - A dedicated new virtual environment was created at `.venv2/`.
 - Dependency installation failed due to SSL issues when connecting to PyPI.

@@ -38,6 +38,15 @@ Existing stack, recorded as found in the repo (see `05-decisions-log.md` →
 | venv (`.venv/`, git-ignored) | Dependency isolation |
 | GitHub Actions (`.github/workflows/python.yml`) | CI: `pip install -e .` + `pytest` on windows-latest, Python 3.13, on push/PR to `main` |
 
+**Local setup (verified 2026-10-10, S4.1.1):** `python -m venv .venv` with
+Python 3.13, then `pip install -e .` and `pip install pytest` inside it. No
+machine setting was needed: no pip config, proxy, or custom certificates.
+The earlier `SSLV3_ALERT_HANDSHAKE_FAILURE` from `files.pythonhosted.org`
+(`review_notes.md`) no longer reproduces, even with `--no-cache-dir`; it
+was most likely a network-side issue at the time. If it comes back, check
+the network/proxy and the Python version first. Never work around it with
+`--trusted-host` or by turning off certificate verification.
+
 ## Starting dependencies
 
 ```
