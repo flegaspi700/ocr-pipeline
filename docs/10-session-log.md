@@ -9,6 +9,29 @@ at the end (see `AGENTS.md`).
 
 ---
 
+## 2026-10-10 — S4.1.2 CI verified; F4.1 done
+
+**Worked on:** S4.1.2 (also PR #4: DoD report table format)
+
+**Time spent:** not recorded — fill in at `/wrap-up`
+
+**Changed:**
+- `docs/01-requirements.md` — S4.1.2 and F4.1 Done, with CI evidence
+- No code or workflow change: `.github/workflows/python.yml` already runs
+  `pytest` on PRs to `main`
+
+**Stopped at:** S4.1.2 done on `feature/S4.1.2-ci-on-every-pr`, not yet
+committed. CI shown green (PR #4) and red (throwaway PR #5, closed, branch
+deleted). F4.1 Done-when met: `pytest` green locally and on a PR.
+
+**Next step:** S1.1.1 — typed `PageResult` in `src/ocr_pipeline/models.py`,
+test-first.
+
+**Open questions:** Protect `main` so a red CI blocks merging? (optional,
+`13-git-workflow.md`)
+
+---
+
 ## 2026-10-10 — Breakdown written; S4.1.1 environment verified
 
 **Worked on:** `/breakdown` (PR #2, merged), S4.1.1
