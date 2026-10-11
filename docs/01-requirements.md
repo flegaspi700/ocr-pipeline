@@ -110,12 +110,12 @@ at each phase end (`07-testing-checklist.md`).
 | ID | Title | Type | Phase | Status |
 |---|---|---|---|---|
 | E1 | Batch OCR to structured output | Epic | 1 | Backlog |
-| F1.1 | Clean pipeline core | Feature | 1 | In progress |
+| F1.1 | Clean pipeline core | Feature | 1 | Done |
 | S1.1.1 | Typed page result | Story | 1 | Done |
 | S1.1.2 | Backend registry; Baidu removed | Story | 1 | Done |
 | S1.1.3 | Pages loaded one at a time | Story | 1 | Dropped |
 | S1.1.4 | Folder inputs expand to their files | Story | 1 | Done |
-| S1.1.5 | `run_pipeline()` with skip-and-report | Story | 1 | In progress |
+| S1.1.5 | `run_pipeline()` with skip-and-report | Story | 1 | Done |
 | F1.2 | Export and CLI on the core | Feature | 1 | Ready |
 | S1.2.1 | JSON and CSV from page results | Story | 1 | Ready |
 | S1.2.2 | CLI is a thin caller of `run_pipeline()` | Story | 1 | Ready |
@@ -241,17 +241,17 @@ that returns page results, so that the CLI, the UI and my own code share
 the same logic.
 
 **Component:** `src/ocr_pipeline/pipeline.py`
-**Status:** In progress
+**Status:** Done
 
 **Acceptance criteria:**
-- [ ] Given image and PDF paths and a backend, when `run_pipeline()` runs,
+- [x] Given image and PDF paths and a backend, when `run_pipeline()` runs,
       then it returns one `PageResult` per page, in input order
-- [ ] Given one corrupt file among good ones, when it runs, then the good
+- [x] Given one corrupt file among good ones, when it runs, then the good
       pages are processed and the bad file appears as a `PageResult` with
       `error` set, plus a logged warning
-- [ ] Given a backend that raises on one page, when it runs, then only that
+- [x] Given a backend that raises on one page, when it runs, then only that
       page carries the error
-- [ ] Given no input paths, when it runs, then it raises "no input files"
+- [x] Given no input paths, when it runs, then it raises "no input files"
 
 **Notes:** Skip-and-report chosen in `/breakdown` (NFR4).
 

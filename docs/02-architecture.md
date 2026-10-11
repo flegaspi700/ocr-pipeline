@@ -30,9 +30,12 @@ Rules:
 
 ## Overview
 
-A batch pipeline. One CLI run loads every input, turns each into page
-images, preprocesses each page, OCRs it with the selected backend, and
-writes one JSON or CSV file. No state persists between runs. It runs fully offline: no external system is
+A batch pipeline. `run_pipeline(paths, backend)` expands folders, turns
+each input into page images, preprocesses each page, OCRs it with the given
+backend, and returns one `PageResult` per page; a bad file or page becomes
+an error in its result and the run goes on (skip-and-report). The CLI still
+has its own copy of this loop until S1.2.2 makes it call `run_pipeline()`,
+then writes one JSON or CSV file. No state persists between runs. It runs fully offline: no external system is
 called (the Baidu API was removed in S1.1.2).
 
 ### System context
@@ -53,16 +56,21 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    cli["cli.py - parse args, orchestrate"]
-    io["io.py - load images, rasterize PDFs"]
+    cli["cli.py - parse args, export"]
+    pipe["pipeline.py - run_pipeline"]
+    io["io.py - expand folders, load images, rasterize PDFs"]
     pre["preprocess.py - resize, grayscale, binarize"]
     be["backend.py - OCRBackend, registry"]
     ex["export.py - JSON / CSV"]
 
-    cli -- "paths, dpi" --> io
-    io -- "source + RGB image per page" --> pre
-    pre -- "processed image as PNG bytes" --> be
-    be -- "list of Line" --> cli
+    cli -. "paths, backend - from S1.2.2" .-> pipe
+    pipe -- "paths" --> io
+    io -- "RGB image per page" --> pipe
+    pipe -- "page image" --> pre
+    pre -- "processed image" --> pipe
+    pipe -- "PNG bytes" --> be
+    be -- "list of Line" --> pipe
+    pipe -. "list of PageResult" .-> cli
     cli -- "per-page results" --> ex
 ```
 
@@ -74,6 +82,15 @@ Parses arguments (`inputs`, `--output`, `--format json|csv`, `--dpi`,
 registry (a missing backend is a plain usage error), and runs the loop:
 load → preprocess → encode PNG → recognize → collect → export. Entry point
 for the `ocr-pipeline` console script.
+
+### pipeline.py
+`run_pipeline(paths, backend) -> list[PageResult]`: raises "No input
+files" for an empty list, expands folders, then for each file loads its
+pages and, per page, preprocesses → PNG → `backend.recognize()` → a
+`PageResult` whose `text` is the lines joined with newlines. A file that
+won't load gives one result with `page=None` and `error`; a page the backend
+fails on gives a result with `error`. Both log a WARNING (message only;
+traceback at DEBUG). Not yet used by the CLI (S1.2.2).
 
 ### io.py
 `expand_inputs(paths)` replaces each folder with its top-level image and PDF
@@ -98,7 +115,8 @@ the local engine (S2.2.2); tests register a fake backend.
 
 ### models.py
 Typed data passed between components: `Line` (`text`, `confidence`) and
-`PageResult` (`source_file`, `page`, `text`, `lines`, `error`).
+`PageResult` (`source_file`, `page`, `text`, `lines`, `error`); `page`
+is None when the whole file failed to load.
 
 ### export.py
 `export_to_json` writes the results list as-is (UTF-8, indented).
@@ -114,6 +132,8 @@ Typed data passed between components: `Line` (`text`, `confidence`) and
 
 ## Data flow contract
 
+- **caller → pipeline:** `run_pipeline(paths: Iterable[Path], backend:
+  OCRBackend) -> list[PageResult]`, one per page in input order.
 - **io → preprocess:** `list[tuple[Path, PIL.Image.Image]]`, images in RGB.
 - **preprocess → backend:** PNG-encoded `bytes` of a grayscale, binarized
   image.
