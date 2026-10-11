@@ -64,6 +64,20 @@ if the project needs more (or fewer) checks, never per story.
 - [ ] Story status is updated here (story + summary table)
 - [ ] A session log entry is written in `10-session-log.md`
 
+**Reporting the DoD:** when a story (or feature) is checked, report the
+result as a table with one row per item above. Status is `Met` or
+`Not met`, with a short note, and any caveat is named in its row (e.g.
+"no code, so a failing state was never seen"). Items that can only be
+checked by hand are listed for the user. The same results go into the
+PR's Definition of Done checklist, which is where the record is kept.
+Example (shortened):
+
+| Item | Status |
+|---|---|
+| Each criterion tested, failing first, now passing | Met (5/5) |
+| Full suite passes | Met (42 passed) |
+| Security checks | Not met: <what's missing and the fix> |
+
 A **feature** is done when all its stories are `Done`, its integration
 and manual tests pass (`07-testing-checklist.md` → Before marking a feature
 done), and its **Done when** line is demonstrated. An **epic** is done when all its features are.
