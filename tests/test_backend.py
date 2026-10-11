@@ -5,16 +5,11 @@ from pathlib import Path
 
 import pytest
 
+from fakes import FakeBackend
 from ocr_pipeline import backend, cli
-from ocr_pipeline.backend import OCRBackend, get_backend
-from ocr_pipeline.models import Line
+from ocr_pipeline.backend import get_backend
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-
-
-class FakeBackend(OCRBackend):
-    def recognize(self, image_bytes: bytes) -> list[Line]:
-        return [Line(text="fake", confidence=1.0)]
 
 
 def test_get_backend_returns_registered_backend(monkeypatch: pytest.MonkeyPatch) -> None:

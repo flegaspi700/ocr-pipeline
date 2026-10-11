@@ -1,24 +1,26 @@
-"""Command-line entry point (`ocr-pipeline`): parse arguments, run OCR, export.
+"""Command-line entry point (`ocr-pipeline`): parse arguments, run, export.
 
-Still runs its own load/preprocess/recognize loop; S1.2.2 turns it into a thin
-caller of `run_pipeline()`. Picks the backend from the registry in
-`backend.py` (S1.1.2).
+A thin caller: gets the backend from the registry (`backend.py`), calls
+`run_pipeline()` (`pipeline.py`) and writes the page results with
+`export.py`. Exit code 0 = every page succeeded, 1 = some page or file
+failed (see the output file and warnings), 2 = usage error.
+Built for S1.1.2 (registry) and S1.2.2 (thin caller).
 """
 
 import argparse
-from dataclasses import asdict
-from io import BytesIO
+import logging
 from pathlib import Path
 
 from .backend import get_backend
 from .export import export_to_csv, export_to_json
-from .io import load_inputs
-from .preprocess import preprocess_image
+from .pipeline import run_pipeline
+
+logger = logging.getLogger(__name__)
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Run OCR pipeline on image and PDF files.")
-    parser.add_argument("inputs", nargs="+", help="Paths to image or PDF files.")
+    parser = argparse.ArgumentParser(description="Run OCR on image and PDF files, or folders of them.")
+    parser.add_argument("inputs", nargs="+", help="Image or PDF files, or folders (top level only).")
     parser.add_argument("--output", required=True, help="Output path for results.")
     parser.add_argument("--format", choices=["json", "csv"], default="json", help="Export format.")
     parser.add_argument("--dpi", type=int, default=200, help="Rasterization DPI for PDF pages.")
@@ -28,31 +30,30 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> int:
+    """Run the CLI on `argv` (default: the command line); return the exit code.
+
+    Usage errors (no inputs, unknown backend, missing path, only empty
+    folders) exit with code 2 via argparse, without a stack trace.
+    """
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
     parser = build_parser()
-    args = parser.parse_args()
-    # Checked before loading any file, so a missing backend fails fast with a
-    # plain message instead of a stack trace.
+    args = parser.parse_args(argv)
+
+    # Checked before loading any file, so a missing backend fails fast.
     try:
         backend = get_backend(args.backend)
     except ValueError as error:
         parser.error(str(error))
 
-    input_paths = [Path(path) for path in args.inputs]
-    loaded = load_inputs(input_paths, dpi=args.dpi)
-
-    results = []
-    for path, image in loaded:
-        processed = preprocess_image(image, threshold=args.threshold)
-        buffer = BytesIO()
-        processed.save(buffer, format="PNG")
-        image_bytes = buffer.getvalue()
-
-        lines = backend.recognize(image_bytes)
-        results.append({
-            "source": str(path),
-            "results": [asdict(line) for line in lines],
-        })
+    # run_pipeline only raises for unusable input as a whole (a missing path,
+    # only empty folders); bad files and pages come back as page results.
+    try:
+        results = run_pipeline(
+            [Path(path) for path in args.inputs], backend, dpi=args.dpi, threshold=args.threshold
+        )
+    except (FileNotFoundError, ValueError) as error:
+        parser.error(str(error))
 
     output_path = Path(args.output)
     if args.format == "json":
@@ -60,6 +61,10 @@ def main() -> None:
     else:
         export_to_csv(results, output_path)
 
+    failed = sum(1 for result in results if result.error)
+    logger.info("Wrote %d pages to %s (%d with errors)", len(results), output_path, failed)
+    return 1 if failed else 0
+
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

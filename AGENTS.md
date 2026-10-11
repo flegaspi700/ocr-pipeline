@@ -259,7 +259,7 @@ exact commands — don't guess or invent alternatives.
 | Task | Command |
 |---|---|
 | Install (dev) | `pip install -e .` then `pip install pytest` |
-| Run the app | `ocr-pipeline <files...> --output results.json [--format json\|csv]` |
+| Run the app | `ocr-pipeline <files or folders...> --output results.json [--format json\|csv] [--backend <name>]` |
 | Run all tests | `pytest` |
 | Run one test file | `pytest tests/<file>.py` |
 | Coverage report | `<command>` |
