@@ -62,6 +62,7 @@ flowchart LR
     pre["preprocess.py - resize, grayscale, binarize"]
     be["backend.py - OCRBackend, registry"]
     ex["export.py - JSON / CSV"]
+    gen["scripts/make_samples.py - sample documents + known text"]
 
     cli -- "paths, backend, dpi, threshold" --> pipe
     pipe -- "paths" --> io
@@ -72,6 +73,7 @@ flowchart LR
     be -- "list of Line" --> pipe
     pipe -- "list of PageResult" --> cli
     cli -- "list of PageResult" --> ex
+    gen -. "samples/ folder, used as input" .-> cli
 ```
 
 ## Components
@@ -129,6 +131,16 @@ per page with columns `source_file, page, text, confidence, error`, where
 `confidence` is the mean over the page's lines (empty if none). It's
 UTF-8 with a byte-order mark so Excel reads non-ASCII text; an empty list
 writes the header only.
+
+### scripts/make_samples.py
+Standalone helper, not part of the package (S2.1.1). `generate_samples(out_dir)`
+writes `receipt.png`, `form.png` and a 3-page `multipage.pdf` (A4 pages, each
+an image drawn with Pillow) plus their known text: `receipt.txt`, `form.txt`,
+`multipage_p1.txt`…`_p3.txt`. Content is fixed and fictional; PNGs carry no
+timestamps and the PDF is saved with empty metadata and no new file ID, so
+every run is byte-identical. `python scripts/make_samples.py` writes to
+`samples/`, which is committed. The `.txt` files are skipped by
+`expand_inputs`, so `ocr-pipeline samples/` sees 5 pages.
 
 ### Known gaps
 

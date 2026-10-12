@@ -9,6 +9,38 @@ at the end (see `AGENTS.md`).
 
 ---
 
+## 2026-10-12 — F2.1 Generated sample documents built
+
+**Worked on:** `/story F2.1` — S2.1.1 (Phase 2 started)
+
+**Time spent:** to be filled in at wrap-up
+
+**Changed:**
+- `scripts/make_samples.py` — `generate_samples(out_dir)`: receipt and form
+  PNGs, 3-page A4 PDF, known text as `.txt` (`multipage_p1..3.txt` per PDF
+  page); fixed fictional content, byte-identical runs (PDF saved with empty
+  metadata and `no_new_id`)
+- `samples/` committed; `.gitattributes` keeps their bytes (LF `.txt`,
+  binary PNG/PDF) despite `core.autocrlf`
+- `tests/test_make_samples.py` — 5 tests incl. one through `run_pipeline()`
+  (5 pages, `.txt` skipped); pytest `pythonpath = ["scripts"]`
+- Pillow minimum raised to 10.1 (`load_default(size=...)`)
+- Docs: architecture (component + diagram), tech stack, AGENTS command,
+  manual test F2.1
+
+**Stopped at:** F2.1 Done on `feature/F2.1-sample-documents`; 47 tests pass,
+Ruff clean. Changes staged, not committed, no PR yet.
+
+**Next step:** after the F2.1 PR is merged: `/story S2.2.1` — engine spike,
+Tesseract vs RapidOCR (a design choice; ends in a logged decision).
+
+**Open questions:** None blocking. Phase 2 is marked In progress
+(started 2026-10-12) in `04-project-plan.md`. Known text keeps column spacing that the
+proportional font doesn't show, so OCR comparisons should collapse
+whitespace.
+
+---
+
 ## 2026-10-11 — Session wrap-up: Phase 1 done
 
 **Worked on:** F1.1 (S1.1.1, S1.1.2, S1.1.4, S1.1.5), F1.2 (S1.2.1,

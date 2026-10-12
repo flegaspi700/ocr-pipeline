@@ -1,0 +1,5 @@
+# Sample documents (S2.1.1) must stay byte-identical to what
+# scripts/make_samples.py writes, so Git never converts their line endings.
+samples/*.txt text eol=lf
+samples/*.png binary
+samples/*.pdf binary

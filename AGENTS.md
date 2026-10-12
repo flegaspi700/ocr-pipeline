@@ -266,6 +266,7 @@ exact commands — don't guess or invent alternatives.
 | Lint | `ruff check .` (auto-fix: `ruff check . --fix`) |
 | Format | `ruff format .` (check only: `ruff format --check .`) |
 | Dependency audit | `pip-audit` |
+| Generate sample documents | `python scripts/make_samples.py` (writes `samples/`) |
 
 ## Testing expectations
 

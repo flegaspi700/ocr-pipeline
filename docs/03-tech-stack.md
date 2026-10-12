@@ -20,7 +20,7 @@ Existing stack, recorded as found in the repo (see `05-decisions-log.md` →
 | Packaging | setuptools via `pyproject.toml`, `src/` layout, console script `ocr-pipeline` | Existing code |
 | CLI | `argparse` (standard library) | No extra dependency |
 | PDF rasterization | PyMuPDF (`fitz`) ≥ 1.22 | Renders PDF pages to images at a chosen DPI |
-| Image preprocessing | Pillow ≥ 10.0 | Resize, grayscale, binarize |
+| Image preprocessing | Pillow ≥ 10.1 | Resize, grayscale, binarize; draws the sample documents (10.1 for the bundled scalable default font) |
 | OCR backend | None yet — backend registry in `backend.py` (S1.1.2); a free local engine comes in Phase 2 | Baidu removed (`05-decisions-log.md` → Phase order changed) |
 | Export | `json`, `csv` (standard library) | No extra dependency |
 | Persistence | None — output files only | Batch tool, no state between runs |
@@ -50,7 +50,7 @@ the network/proxy and the Python version first. Never work around it with
 ## Starting dependencies
 
 ```
-Pillow>=10.0.0
+Pillow>=10.1.0
 PyMuPDF>=1.22.0
 ```
 

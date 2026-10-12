@@ -1,0 +1,15 @@
+EXAMPLE CORNER SHOP
+12 Sample Street, Testville
+Date: 2026-01-15  Time: 10:42
+
+Bread            2 x 2.50    5.00
+Milk 1L          1 x 1.20    1.20
+Apples 1kg       1 x 3.40    3.40
+Coffee beans     1 x 8.90    8.90
+
+Subtotal                    18.50
+Tax 10%                      1.85
+TOTAL                       20.35
+
+Paid by card
+Thank you for shopping!

@@ -1,0 +1,11 @@
+MEMBERSHIP APPLICATION FORM
+
+Full name: Jane Sample
+Date of birth: 1990-04-01
+Address: 34 Placeholder Road, Testville
+Email: jane.sample@example.com
+Phone: 555-0142
+Membership type: Standard
+Start date: 2026-02-01
+
+Signature: J. Sample

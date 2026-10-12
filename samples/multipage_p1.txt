@@ -1,0 +1,5 @@
+QUARTERLY NOTES - PAGE 1
+
+This document is a generated sample.
+It has three pages of plain printed text.
+Each page has its own known text file.

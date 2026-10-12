@@ -1,0 +1,6 @@
+QUARTERLY NOTES - PAGE 2
+
+Item          Count    Price
+Widgets          40     2.75
+Gadgets          15    12.00
+Gizmos            8    31.50

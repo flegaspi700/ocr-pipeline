@@ -116,7 +116,7 @@ estimate and actual is what makes estimates better next time.
 |---|---|---|---|---|---|
 | 0 — Environment setup | Done | — | — | — | 2026-10-10 (existing scaffold) |
 | 1 — Clean core | Done | 8 | ~3 (incl. breakdown) | 2026-10-10 | 2026-10-11 |
-| 2 — Real OCR, local engine | Not started | 6 | | | |
+| 2 — Real OCR, local engine | In progress | 6 | | 2026-10-12 | |
 | 3 — Local web UI | Not started | 6 | | | |
 | 4 — Tuning | Not started | Ongoing | | | |
 
@@ -153,7 +153,7 @@ gantt
     Phase 1 done                  :done, milestone, m1, after f12, 0h
 
     section Phase 2 — Real OCR
-    F2.1 Sample documents         :f21, after m1, 1h
+    F2.1 Sample documents         :done, f21, after m1, 1h
     F2.2 Local OCR backend        :crit, f22, after f21, 5h
     Phase 2 done                  :milestone, m2, after f22, 0h
 

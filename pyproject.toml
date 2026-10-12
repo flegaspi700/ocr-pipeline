@@ -10,7 +10,7 @@ authors = [
   { name = "OCR Pipeline Team", email = "info@example.com" }
 ]
 dependencies = [
-  "Pillow>=10.0.0",
+  "Pillow>=10.1.0",
   "PyMuPDF>=1.22.0"
 ]
 [project.scripts]
@@ -26,3 +26,7 @@ target-version = "py311"
 [tool.ruff.lint]
 # Ruff's defaults (pyflakes + core pycodestyle) plus import sorting.
 extend-select = ["I"]
+
+[tool.pytest.ini_options]
+# Lets tests import the helper scripts in scripts/ (not part of the package).
+pythonpath = ["scripts"]
