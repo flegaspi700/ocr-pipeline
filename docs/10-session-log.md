@@ -9,11 +9,41 @@ at the end (see `AGENTS.md`).
 
 ---
 
+## 2026-10-12 — Session wrap-up: F2.1 done, Phase 2 started
+
+**Worked on:** F2.1 (S2.1.1) — built, PR #13 merged, branch deleted
+
+**Time spent:** ~30 min (whole session; the entry below is part of it).
+Phase 2 so far ~0.5h against a 6h estimate.
+
+**Changed:**
+- PR #13 — `scripts/make_samples.py` and committed `samples/` (receipt,
+  form, 3-page PDF + known text), 5 tests, `.gitattributes` for sample
+  bytes, Pillow ≥ 10.1; Phase 2 In progress in `04-project-plan.md`
+- This entry
+
+**Stopped at:** `main` clean and in sync after PR #13; 47 tests pass, Ruff
+clean. F2.1 Done; F2.2 not started.
+
+**Next step:** first, **manual testing** of what's built so far (user's
+request): run `python scripts/make_samples.py`, compare each file in
+`samples/` with its `.txt`, and record the result in the F2.1 row of
+`docs/12-manual-tests.md`; try the CLI's usage errors (no inputs, missing
+path, unknown backend → exit 2, no stack trace). Real OCR runs wait for
+S2.2.2. Then `/story S2.2.1` — engine spike, Tesseract vs RapidOCR (a design
+choice: options and a recommendation before any code).
+
+**Open questions:** Carried over: Dependabot / secret-scanning alerts on
+GitHub (skipped by the user); should `16-budget.md` drop to Optional;
+PyMuPDF `import fitz` and Pillow `getdata` deprecation warnings.
+
+---
+
 ## 2026-10-12 — F2.1 Generated sample documents built
 
 **Worked on:** `/story F2.1` — S2.1.1 (Phase 2 started)
 
-**Time spent:** to be filled in at wrap-up
+**Time spent:** counted in the wrap-up entry above
 
 **Changed:**
 - `scripts/make_samples.py` — `generate_samples(out_dir)`: receipt and form
