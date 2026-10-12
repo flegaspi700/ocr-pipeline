@@ -120,8 +120,8 @@ at each phase end (`07-testing-checklist.md`).
 | S1.2.1 | JSON and CSV from page results | Story | 1 | Done |
 | S1.2.2 | CLI is a thin caller of `run_pipeline()` | Story | 1 | Done |
 | E2 | A free local engine I can judge | Epic | 2, 4 | Backlog |
-| F2.1 | Generated sample documents | Feature | 2 | Ready |
-| S2.1.1 | Sample document generator | Story | 2 | Ready |
+| F2.1 | Generated sample documents | Feature | 2 | Done |
+| S2.1.1 | Sample document generator | Story | 2 | Done |
 | F2.2 | Local OCR backend | Feature | 2 | Ready |
 | S2.2.1 | Engine spike: Tesseract vs RapidOCR | Story | 2 | Ready |
 | S2.2.2 | Local OCR backend | Story | 2 | Ready |
@@ -328,15 +328,15 @@ with its known text.
 text, so that I can compare OCR output against what's really on the page.
 
 **Component:** `scripts/`
-**Status:** Ready
+**Status:** Done
 
 **Acceptance criteria:**
-- [ ] Given the script runs, then `samples/receipt.png`, `samples/form.png`
+- [x] Given the script runs, then `samples/receipt.png`, `samples/form.png`
       and `samples/multipage.pdf` (3 pages) exist, each with a `.txt` file
       holding its known text (one per page for the PDF)
-- [ ] Given the script runs twice, then the output files are byte-identical
+- [x] Given the script runs twice, then the output files are byte-identical
       (fixed content, no randomness or clock)
-- [ ] Given the samples, then they contain no real personal data
+- [x] Given the samples, then they contain no real personal data
 
 **Notes:** Uses Pillow and PyMuPDF (already dependencies). Font: Pillow's
 default or a bundled one, so it works on any machine.
