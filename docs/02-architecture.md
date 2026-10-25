@@ -189,8 +189,11 @@ For those, the process is:
 Choices that need a comparison but haven't been decided yet. Each should
 also exist as a `Proposed` entry in `05-decisions-log.md`.
 
-- <question — e.g. "How should run results be stored?"> → decide by <phase
-  or trigger>
+- Which local OCR engine: Tesseract, RapidOCR or EasyOCR? → decide in
+  S2.2.1 (engine spike, Phase 2). Recorded as open in
+  `05-decisions-log.md` → 2026-10-10 Next direction.
+- Which UI library: Streamlit or Gradio? → decide at the start of Phase 3.
+  Same decision entry.
 
 ### Key decisions
 

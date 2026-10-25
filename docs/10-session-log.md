@@ -9,6 +9,30 @@ at the end (see `AGENTS.md`).
 
 ---
 
+## 2026-10-25 — Template updated from v1.0.0 to v1.4.0 (standardization pilot)
+
+**Worked on:** no story — pilot of the project standard's compliance checks
+
+**Time spent:** not counted toward Phase 2 (template work)
+
+**Changed:**
+- `portfolio.json` — new: what this project reports to the portfolio
+  (owner, sponsor, program Document RAG Parsing, health green, one risk,
+  one call-out, budget $0)
+- `AGENTS.md` — Template version line, Portfolio reporting section, UTF-8 rule
+- `.claude/skills/report`, `wrap-up` — template v1.4.0 versions (they now
+  keep `portfolio.json` current); `/story` keeps its local DoD-table change
+- `docs/02-architecture.md` — open design questions filled in (engine, UI
+  library); `docs/04-project-plan.md` — Phase 0 placeholders filled in
+
+**Stopped at:** compliance level 3 (Current), no warnings; 47 tests pass.
+
+**Next step:** unchanged — `/story S2.2.1`, engine spike.
+
+**Open questions:** None
+
+---
+
 ## 2026-10-12 — Session wrap-up: F2.1 done, Phase 2 started
 
 **Worked on:** F2.1 (S2.1.1) — built, PR #13 merged, branch deleted
