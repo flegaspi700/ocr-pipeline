@@ -1,0 +1,33 @@
+{
+  "$schema": "https://raw.githubusercontent.com/flegaspi700/pmo-project-standardization/main/spec/portfolio.schema.json",
+  "schema": 1,
+  "name": "OCR Pipeline",
+  "summary": "Python CLI and library that turns scanned images and PDFs into structured text, as a personal trial of a free local OCR pipeline.",
+  "owner": "Frederick Legaspi",
+  "sponsor": "Frederick Legaspi",
+  "program": "Document RAG Parsing",
+  "lifecycle": "active",
+  "health": "green",
+  "health_reason": "Phase 1 done; Phase 2 under way with no blockers.",
+  "phase": { "current": 2, "name": "Real OCR, local engine" },
+  "progress": { "stories_done": 9, "stories_total": 12, "open_bugs": 0, "as_of": "2026-10-25" },
+  "next_milestone": null,
+  "risks": [
+    {
+      "title": "A free local OCR engine may not read receipts and forms well enough.",
+      "severity": "medium",
+      "mitigation": "Engine spike S2.2.1 on the generated samples before building the UI."
+    }
+  ],
+  "blockers": [],
+  "callouts": ["No work since 2026-10-12; next step is the engine spike (S2.2.1)."],
+  "budget": {
+    "month": "2026-10",
+    "currency": "USD",
+    "spend": 0,
+    "limit": 0,
+    "hours_phase": 0.5,
+    "hours_phase_estimate": 6
+  },
+  "updated": "2026-10-25"
+}

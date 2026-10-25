@@ -3,6 +3,10 @@
 Context file for AI coding agents working on this project. Read this first,
 every session, before writing or changing code.
 
+**Template version: v1.4.0** — the project template this
+project was created from. Its `CHANGELOG.md` lists what newer versions add.
+(Created from v1.0.0; updated by hand to v1.4.0 on 2026-10-25.)
+
 ## Commands (skills)
 
 The project's workflow commands live in `.claude/skills/` (`/story`,
@@ -75,6 +79,17 @@ Check `docs/04-project-plan.md` → Status table for what's done and what's
 next. Work on the current phase only — don't jump ahead to later-phase
 components unless explicitly asked.
 
+## Portfolio reporting
+
+`portfolio.json` is what this project reports to the portfolio: owner,
+sponsor, lifecycle, health, phase, progress, risks, blockers, call-outs,
+budget. `/report` and `/wrap-up` keep it current. Fields and rules:
+[reporting contract](https://github.com/flegaspi700/pmo-project-standardization/blob/main/spec/reporting-contract.md)
+(also in `D:\Projects\Template\spec\`).
+
+- Never guess health, risks, blockers or call-outs: ask the user.
+- Unknown stays `null`. Keep the file valid JSON (UTF-8, 2-space indent).
+
 ## Requirements and stories
 
 Work is defined in `docs/01-requirements.md` as epics → features → stories.
@@ -145,6 +160,12 @@ change**. If a new kind of diagram would help (e.g. the first stored data
 
 See `docs/06-coding-conventions.md` for the full layout. Summary: <one line
 describing the top-level layout and where tests live>.
+
+**Text files are UTF-8 without a BOM.** Windows PowerShell 5.1 reads them
+wrong by default (`—` shows as three odd characters starting with `â`),
+and writing that text back as UTF-8 saves the garbling. Use your own file tools, or pass `-Encoding UTF8` to
+`Get-Content` and write with
+`[System.IO.File]::WriteAllText($path, $text, (New-Object System.Text.UTF8Encoding($false)))`.
 
 ## Writing code: simple and explained
 

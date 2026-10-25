@@ -30,7 +30,8 @@ with no real logic yet.
 
 - [ ] Choose and record the stack (`AGENTS.md` → Choosing the stack)
 - [ ] Set up the environment and dependencies
-- [ ] <Smallest possible end-to-end round trip through the riskiest part>
+- [x] Clean install of the existing code in a fresh venv, existing tests
+      pass (confirmed 2026-10-10, S4.1.1)
 - [ ] Create the test folders (`07-testing-checklist.md` → Kinds of tests)
       and run one passing test from the test runner
 - [ ] Fill in `AGENTS.md` → Commands (run, test, coverage, lint, format)
@@ -44,9 +45,11 @@ with no real logic yet.
 - [ ] Decide whether accessibility applies and trim `15-accessibility.md`
 - [ ] Set budget limits and provider spend alerts (`16-budget.md`)
 - [ ] Fill in the non-functional requirements (`01-requirements.md`)
-- [ ] <Measure the one number that matters, if any (speed, latency, size)>
+- [x] Measure the one number that matters: n/a in Phase 0 (OCR quality is
+      judged on the samples in Phase 2)
 
-**Exit criteria:** <What you can demonstrate, reliably.>
+**Exit criteria:** the existing code installs cleanly and its tests pass
+(met 2026-10-10, S4.1.1).
 
 ## Phase 1 — Clean core
 **Estimate:** ~8h
