@@ -1,11 +1,48 @@
 # Session log
 
-A handoff note at the end of every working session, so the next session
-(yours or an AI agent's) can pick up without re-reading everything. Newest
-entry at the top. Keep each entry short — a few lines per heading.
+A handoff note at the end of every working session, so the next one can
+pick up without rereading everything. Newest first. Entry format: the
+standard's `sessions.md`.
 
-AI agents: read the latest entry at the start of a session; add a new one
-at the end (see `AGENTS.md`).
+Entries before 2026-11-13 were written under the v1 template and refer to
+its numbered docs. Where they live now: `00`, `01`, `04` → `requirements.md`;
+`02`, `03`, `11` → `architecture.md`; `05` → `decisions.md`; `10` →
+`session-log.md`; `12`, `14`, `15`, `16` → `manual-tests.md`, `security.md`,
+`accessibility.md`, `budget.md`; `06`, `07`, `13` → the standard's
+`coding.md`, `testing.md`, `git.md`.
+
+---
+
+## 2026-11-13 — Moved to standard v2.0.0
+
+**Worked on:** no story — moving the project from the v1 template to the
+shared standard v2.0.0
+
+**Time spent:** not counted toward Phase 2 (standard work)
+
+**Changed:**
+- `AGENTS.md` — the v2 file: standard version, commands, core rules, and
+  the project's own notes (hard boundaries, layout, Ruff, DoD reported as
+  a table, which used to be a local change to `/story`)
+- `docs/requirements.md` — vision (`00`), requirements (`01`) and plan
+  (`04`, now a Phases table with estimates and actuals) in one file
+- `docs/architecture.md` — from `02`, plus the tech stack (`03`) and the
+  glossary (`11`)
+- `docs/decisions.md`, `docs/session-log.md` — renamed from `05`, `10`;
+  entries unchanged
+- `docs/security.md`, `accessibility.md`, `budget.md`, `manual-tests.md` —
+  the project-specific parts of `14`, `15`, `16`, `12`
+- Removed: the rest of the numbered docs, `.claude/skills/` (the commands
+  are installed from the standard), `.github/pull_request_template.md`
+- `src/ocr_pipeline/backend.py` — the "no backend" message points to
+  `docs/requirements.md` instead of the deleted plan doc
+
+**Stopped at:** compliance level 3 (Current) on v2.0.0, no warnings; 47
+tests pass; Ruff clean.
+
+**Next step:** unchanged — `/story S2.2.1`, engine spike.
+
+**Open questions:** None
 
 ---
 
@@ -267,24 +304,3 @@ deliberately failing test (throwaway branch).
 **Open questions:** None
 
 ---
-
-## Template
-
-```
-## YYYY-MM-DD — <short summary of the session>
-
-**Worked on:** <story IDs, e.g. S1.2.3>
-
-**Time spent:** <hours, e.g. 1.5h — used for the budget in 16-budget.md>
-
-**Changed:**
-- <file or folder> — <what changed and why>
-
-**Stopped at:** <exactly where things are: what works, what's half-done,
-any failing test and why>
-
-**Next step:** <the very next thing to do — specific enough to start on
-without thinking, e.g. "make test_empty_input pass in perception/detect.py">
-
-**Open questions:** <anything waiting on the user, or "None">
-```

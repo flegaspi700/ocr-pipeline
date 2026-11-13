@@ -1,16 +1,13 @@
 # Requirements
 
-What the project must do, broken down as **Epic → Feature → Story**. The
-project plan (`04-project-plan.md`) decides *when* each piece gets built;
-this doc decides *what* gets built and how you know it's done.
+What this project builds, and how you know each piece is done. Format and
+rules: the standard's `requirements.md`.
 
-- **Epic:** a large capability or outcome. Too big to build in one go.
-  Usually spans several phases.
-- **Feature:** a piece of an epic that is useful on its own. Fits in one
-  phase.
-- **Story:** the smallest unit of work: one prompt-sized change to one
-  component, with acceptance criteria that can be tested. If a story needs
-  more than ~a day or touches several components, split it.
+## Vision
+
+`ocr_pipeline` turns images and multi-page PDFs into per-page text as JSON
+or CSV, as a personal trial: learn an OCR pipeline end to end and judge
+whether a free local engine is good enough on my own documents.
 
 **Baseline (2026-10-10):** the project already exists — a Python CLI and
 library that loads images and multi-page PDFs, preprocesses them, sends each
@@ -18,94 +15,114 @@ page to a pluggable OCR backend (Baidu, to be removed in S1.1.2), and exports pe
 JSON or CSV. No stories are written for that existing code; new work starts
 from `/breakdown`.
 
-## How to work with this doc
+### Problem
 
-- Every epic serves at least one goal from `00-vision.md`. An epic that
-  serves none is out of scope until the vision changes.
-- A small project can have a single epic with a few features, and stories
-  for the current phase only — don't pad it to look complete.
-- Break requirements down top-down when starting the project: write the
-  epics first, then features, then stories only for the current and next
-  phase. Stories for later phases get written when you reach them.
-- IDs are stable — never renumber. Removed items get status `Dropped`, not
-  deleted.
-- Every story's acceptance criteria become its tests (see
-  `07-testing-checklist.md`).
-- Reference story IDs in the project plan, commit messages and prompts
-  (e.g. "Implement S1.2.3").
-- A story is done when it meets its acceptance criteria *and* the
-  Definition of Done below. Then update its status here and in the summary
-  table.
+Text locked in scanned documents, photos, and multi-page PDFs can't be
+searched, copied, or processed. Getting it out as structured data means
+juggling separate tools for PDF rasterization, image cleanup, and OCR, then
+reshaping whatever comes back. This project wraps that chain into one
+command that produces JSON or CSV.
 
-**Statuses:** `Backlog` → `Ready` (acceptance criteria written) →
-`In progress` → `Done` · or `Dropped`
+### Who it's for
 
-## Definition of Done
+Me — a developer trying out an OCR pipeline on my own scanned documents and
+PDFs. I want to run it from the command line on a batch of files and get
+structured text back, and be able to call it from Python. Without it, I'd be
+using one-off scripts or online OCR tools file by file.
 
-A story is `Done` only when it meets **its own acceptance criteria** *and*
-**every item below**. This list is the same for every story — edit it here
-if the project needs more (or fewer) checks, never per story.
+### Why build it
 
-- [ ] Each acceptance criterion has a test, written first and seen failing;
-      the tests now pass, and the output has been seen (not just reported)
-- [ ] No test was deleted, skipped, or weakened to get there
-- [ ] The full test suite still passes
-- [ ] The code is the simplest version that works — nothing speculative
-      (`06-coding-conventions.md` → Simplicity first)
-- [ ] New/changed files have a header note; non-obvious functions have a
-      doc comment; existing notes still match the code
-- [ ] Any new decision is logged in `05-decisions-log.md`; any new term is
-      in `11-glossary.md`; diagrams in `02-architecture.md` still match
-      the code
-- [ ] No non-functional requirement (below) is broken by the change
-- [ ] Security checks for the change pass (`14-security.md` → Every
-      change); accessibility checks too if the UI changed
-      (`15-accessibility.md`)
-- [ ] Story status is updated here (story + summary table)
-- [ ] A session log entry is written in `10-session-log.md`
+A trial and learning project: get hands-on with an end-to-end OCR pipeline
+(PDF rasterization, preprocessing, calling an OCR service, exporting
+results) and find out whether the approach and backend are good enough to
+invest more in. "Good enough" means it works reliably on my own sample
+documents — not production-hardened; parts can be rebuilt or the backend
+swapped along the way.
 
-**Reporting the DoD:** when a story (or feature) is checked, report the
-result as a table with one row per item above. Status is `Met` or
-`Not met`, with a short note, and any caveat is named in its row (e.g.
-"no code, so a failing state was never seen"). Items that can only be
-checked by hand are listed for the user. The same results go into the
-PR's Definition of Done checklist, which is where the record is kept.
-Example (shortened):
+### Goals
 
-| Item | Status |
-|---|---|
-| Each criterion tested, failing first, now passing | Met (5/5) |
-| Full suite passes | Met (42 passed) |
-| Security checks | Not met: <what's missing and the fix> |
+- **G1:** I can point one command at a mix of images and multi-page PDFs
+  and get each page's text back as usable JSON or CSV.
+- **G2:** I can tell whether the OCR is good enough on my own documents —
+  and compare backends without rewriting the pipeline.
+- **G3:** I can reuse the pipeline from my own Python code, not just the
+  CLI.
+- **G4:** I can trust a change didn't break it — tests run green locally
+  and in CI.
 
-A **feature** is done when all its stories are `Done`, its integration
-and manual tests pass (`07-testing-checklist.md` → Before marking a feature
-done), and its **Done when** line is demonstrated. An **epic** is done when all its features are.
+### Success looks like
 
-## Non-functional requirements
+- One CLI run on a folder of ~10 sample files (images + a multi-page PDF)
+  completes without errors and produces one result per page, in both JSON
+  and CSV.
+- On my sample documents, extracted text is readable and mostly correct
+  when spot-checked against the originals (my judgment, not a formal
+  accuracy score).
+- A second OCR backend (e.g. local Tesseract) can be added without changing
+  anything outside the backend module and a CLI option.
+- `pytest` passes locally and in CI on every PR.
 
-Qualities the whole system must have, rather than things it does —
-how fast, how secure, how accessible, how reliable, how cheap. They apply
-to every story, so they're checked by the Definition of Done and verified
-at each phase end (`07-testing-checklist.md`).
+### Non-goals
 
-- Each one must be **measurable** — "fast" isn't a requirement; "≥ 20
-  updates/sec on the target machine" is.
-- Delete the example rows that don't apply; add your own. Stories that
-  exist mainly to meet an NFR reference its ID in **Notes**.
+**Not in this version** (candidates for a future version):
 
-| ID | Category | Requirement (measurable) | How verified | Status |
-|---|---|---|---|---|
-| NFR1 | Performance | The 5 sample pages (`samples/`) finish in under 60 s on this machine with the local engine | Timed CLI run in S2.2.3, each phase end | Not met yet |
-| NFR2 | Security | No known high-severity vulnerabilities in dependencies | Dependency audit + Dependabot, each phase end (`14-security.md`) | Met (2026-10-11): `pip-audit` clean after upgrading the venv's pip; Dependabot alerts are off for the repo |
-| NFR3 | Accessibility | The local web UI meets the "Apps and websites" checklist in `15-accessibility.md` (WCAG 2.2 AA, where the UI library allows) | Manual pass per `15-accessibility.md` | Not met yet |
-| NFR4 | Reliability | One bad input file never stops a run: it is reported as an error and the other pages still finish | Test in S1.1.5 + manual run with a corrupt file | Not met yet: tests pass through `run_pipeline()` and the CLI (2026-10-11); manual run waits for a real backend (Phase 2) |
-| NFR5 | Privacy | OCR runs fully offline (no network calls), and document text is never logged above DEBUG | Tests in S1.2.2 / S2.2.2 + review of logs | Not met yet: no network code or library since S1.1.2, log test passes (2026-10-11); local engine checked in S2.2.2 |
-| NFR6 | Cost | Monthly spend $0: free, local tools only (`16-budget.md`) | Monthly log in `16-budget.md` | Met (2026-10-11): $0 so far, free tools only, public repo so Actions is free; monthly log starts 2026-11 |
+- A production service — hosting, API server, multi-user, uptime or scale
+  targets
+- A full desktop or hosted web app — only a simple local web UI to
+  drag/select files and folders and view results
+- Training or fine-tuning OCR models
+- Layout reconstruction — tables, columns, Word or searchable-PDF output
+- Handwriting-specific tuning beyond what the backend already does
 
-**Statuses:** `Not met yet` · `Met` (with date last verified) · `At risk`
+### Constraints
 
-## Summary
+- **Time:** spare time, no fixed deadline — it's a trial
+- **Budget:** free tools and free tiers only; a paid OCR API only within its
+  free quota — limits and tracking in `budget.md`
+- **Platform / environment:** Windows 11, runs locally; Python 3.11+ (CI
+  tests on 3.13, Windows)
+- **Other:** pip install once failed here with an SSL handshake error; it
+  no longer reproduces (2026-10-10, see `architecture.md` → Tech stack). API keys never
+  committed; they go in environment variables / `.env`.
+
+### Assumptions and risks
+
+- **Assumption:** the dependencies (Pillow, PyMuPDF, requests) install and
+  the existing tests pass → **confirmed 2026-10-10** (S4.1.1): clean
+  install in a fresh venv, all 8 existing tests pass. (`requests` was later
+  removed with the Baidu backend, S1.1.2.)
+- **Closed:** the Baidu assumption and risk (unverified API, no key) —
+  Baidu was removed in S1.1.2 (`decisions.md` → 2026-10-10 Phase
+  order changed); a free local engine replaces it in Phase 2.
+- **Risk:** no free local engine reads my documents well enough, blocking
+  G1 → the S2.2.1 spike compares Tesseract and RapidOCR on the samples
+  before one is built in.
+- **Risk:** fixed-threshold binarization hurts accuracy on photos or
+  low-contrast scans → spot-check against samples; make preprocessing
+  optional or tunable.
+- **Risk:** large PDFs at high DPI use too much memory, since all pages are
+  loaded before OCR → process page by page if it becomes a problem.
+
+## Phases
+
+Plans are in focused hours, not calendar dates: the gap between estimate
+and actual (summed from Time spent in `session-log.md`) is what makes the
+next estimate better.
+
+| Phase | Goal | Exit criteria | Status | Estimate (h) | Actual (h) | Started | Finished |
+|---|---|---|---|---|---|---|---|
+| 0 — Environment setup | Prove the toolchain on the existing code | The existing code installs cleanly and its tests pass (met 2026-10-10, S4.1.1) | Done | — | — | — | 2026-10-10 (existing scaffold) |
+| 1 — Clean core | Tests green on a working environment, and one clean `run_pipeline()` with typed results that the CLI calls (F4.1, F1.1, F1.2) | `pytest` passes locally and in CI; the CLI, with a fake backend in tests, turns files and folders into JSON and one-row-per-page CSV, and a corrupt file is reported without stopping the run | Done | 8 | ~3 (incl. breakdown) | 2026-10-10 | 2026-10-11 |
+| 2 — Real OCR, local engine | Real, free, offline OCR on generated samples with known text (F2.1, F2.2) | `ocr-pipeline samples/ --output r.csv` runs offline with no flags in under 60 s, and the manual spot-check in `manual-tests.md` finds the text readable | Active | 6 | | 2026-10-12 | |
+| 3 — Local web UI | A local page to pick files and folders and judge OCR page by page (F3.1–F3.3; stories written when the phase starts) | All 5 sample pages can be reviewed side by side in the browser and downloaded as JSON/CSV; the `accessibility.md` pass is done | Planned | 6 | | | |
+| 4 — Tuning and iteration | Better text on my own documents: readable and mostly correct when spot-checked (F2.3) | None: iterative and ongoing | Planned | Ongoing | | | |
+
+**Breakdown (2026-10-10):** refactor first, then a free local engine, then
+the UI; Baidu is removed (`decisions.md` → Phase order changed). Build order
+in Phase 1: F4.1 first (nothing can be tested before it), then F1.1, then
+F1.2.
+
+## Epics, features and stories
 
 | ID | Title | Type | Phase | Status |
 |---|---|---|---|---|
@@ -136,8 +153,6 @@ at each phase end (`07-testing-checklist.md`).
 | S4.1.1 | Dependencies install and existing tests pass locally | Story | 1 | Done |
 | S4.1.2 | CI runs on every PR | Story | 1 | Done |
 
-Build order in Phase 1: F4.1 first (nothing can be tested before it), then
-F1.1, then F1.2.
 
 ---
 
@@ -163,7 +178,7 @@ and the corrupt file shows as an error, not a crash.
 
 **Story:** Technical — a `PageResult` dataclass replaces the raw dicts passed
 between components, so the interface is self-documenting
-(`06-coding-conventions.md` → Typing).
+(the standard's `coding.md` → Typing).
 
 **Component:** `src/ocr_pipeline/models.py`
 **Status:** Done
@@ -181,7 +196,7 @@ between components, so the interface is self-documenting
 
 **Story:** As a developer, I want to pick an OCR backend by name from one
 registry, so that adding an engine touches only the backend module and a
-CLI option (`00-vision.md` → Success looks like).
+CLI option (`requirements.md` → Vision → Success looks like).
 
 **Component:** `src/ocr_pipeline/backend.py`
 **Status:** Done
@@ -195,11 +210,11 @@ CLI option (`00-vision.md` → Success looks like).
       says "no OCR backend installed" and what to do — not a stack trace
 - [x] Given the change is done, then the Baidu backend, its tests, its
       `.env.example` entries and `requests` (if nothing else uses it) are
-      gone, and `AGENTS.md`, `README.md`, `00-vision.md`,
-      `02-architecture.md`, `03-tech-stack.md` and the `14-security.md`
+      gone, and `AGENTS.md`, `README.md`, `requirements.md` → Vision,
+      `architecture.md`, `architecture.md` → Tech stack and the `security.md`
       threat model no longer describe Baidu as current
 
-**Notes:** Baidu removed by user choice (`05-decisions-log.md`, 2026-10-10
+**Notes:** Baidu removed by user choice (`decisions.md`, 2026-10-10
 "Phase order changed"). Until S2.2.2 the registry has no real backend;
 tests register a fake one.
 
@@ -212,7 +227,7 @@ page before OCR, to bound memory on large PDFs.
 **Status:** Dropped
 
 **Notes:** Cut during `/breakdown` (2026-10-10) — the trial's documents are
-small. Revisit if a large PDF runs out of memory (risk in `00-vision.md`).
+small. Revisit if a large PDF runs out of memory (risk in `requirements.md` → Vision).
 
 #### S1.1.4 — Folder inputs expand to their files
 
@@ -349,7 +364,7 @@ used by default.
 **Depends on:** F1.2, F2.1
 **Done when:** `ocr-pipeline samples/ --output r.csv` runs offline with no
 flags, and the text is readable when spot-checked against the known text
-(manual test in `12-manual-tests.md`).
+(manual test in `manual-tests.md`).
 
 #### S2.2.1 — Engine spike: Tesseract vs RapidOCR
 
@@ -361,12 +376,12 @@ engine choice is made from evidence, not guessed.
 
 **Acceptance criteria:**
 - [ ] Given both engines installed in a throwaway venv, when each is run on
-      the 3 samples, then a table in `05-decisions-log.md` records install
+      the 3 samples, then a table in `decisions.md` records install
       effort on this machine, seconds per page, and readability against
       the known text
 - [ ] Given the table, then the user picks one and the decision is logged
       (each package verified in its official registry first —
-      `14-security.md`)
+      `security.md`)
 
 #### S2.2.2 — Local OCR backend
 
@@ -387,7 +402,7 @@ need no account or key and documents never leave the machine.
       without error
 - [ ] Given any run, then no network call is made (NFR5)
 
-**Notes:** Engine chosen in S2.2.1. Add it to `03-tech-stack.md`.
+**Notes:** Engine chosen in S2.2.1. Add it to `architecture.md` → Tech stack.
 
 #### S2.2.3 — Local engine as default; end-to-end on samples
 
@@ -401,7 +416,7 @@ flags, so that one command on my samples gives real results.
 - [ ] Given `samples/` and no `--backend`, when the CLI runs with JSON and
       then CSV output, then each has one result per page (5 pages)
 - [ ] Given the output, then a manual spot-check against the `.txt` files is
-      recorded in `12-manual-tests.md`
+      recorded in `manual-tests.md`
 - [ ] Given the 5 sample pages, then the run takes under 60 s (NFR1)
 
 ### F2.3 — Tunable preprocessing
@@ -420,13 +435,13 @@ difference is recorded.
 **Goal:** A local web page to drag or select files and folders, run OCR,
 and see each page next to its text — the easiest way to judge the OCR.
 **Serves:** G2
-**Out of scope:** hosting, multi-user, full desktop app (`00-vision.md` →
+**Out of scope:** hosting, multi-user, full desktop app (`requirements.md` → Vision →
 Non-goals).
 
 ### F3.1 — Pick UI library and show a page
 
 **Description:** Choose the UI library (Streamlit vs Gradio — open in
-`05-decisions-log.md`) and serve a local page.
+`decisions.md`) and serve a local page.
 **Phase:** 3
 **Depends on:** F2.2
 **Done when:** a local page opens in the browser from one command.
@@ -445,7 +460,7 @@ results as JSON or CSV.
 **Phase:** 3
 **Depends on:** F3.2
 **Done when:** all 5 sample pages can be reviewed side by side and
-downloaded, and the `15-accessibility.md` checklist passes (NFR3).
+downloaded, and the `accessibility.md` checklist passes (NFR3).
 
 ---
 
@@ -454,7 +469,7 @@ downloaded, and the `15-accessibility.md` checklist passes (NFR3).
 **Goal:** Tests run green locally and in CI, so a change can be trusted.
 **Serves:** G4
 **Out of scope:** coverage targets; linter/formatter choice (pending
-decision in `05-decisions-log.md`).
+decision in `decisions.md`).
 
 ### F4.1 — Working dev environment and CI
 
@@ -466,7 +481,7 @@ decision in `05-decisions-log.md`).
 #### S4.1.1 — Dependencies install and existing tests pass locally
 
 **Story:** Technical — packages must install on this machine before any
-test-first work is possible (riskiest assumption in `05-decisions-log.md`).
+test-first work is possible (riskiest assumption in `decisions.md`).
 
 **Component:** environment / `pyproject.toml`
 **Status:** Done
@@ -477,13 +492,13 @@ test-first work is possible (riskiest assumption in `05-decisions-log.md`).
 - [x] Given the installed package, when `pytest` runs, then all existing
       tests pass and the output has been seen
 - [x] Given the fix needs a machine setting (proxy, certificates), then it
-      is written down in `03-tech-stack.md` — no `--trusted-host` or
+      is written down in `architecture.md` → Tech stack — no `--trusted-host` or
       certificate-verification bypass
 
 **Notes:** Done 2026-10-10. The SSL error no longer reproduces: a fresh
 `.venv` (Python 3.13) installed everything over HTTPS with `--no-cache-dir`,
 with no machine setting needed; 8/8 existing tests pass. Recorded in
-`03-tech-stack.md` → Local setup.
+`architecture.md` → Tech stack → Local setup.
 
 #### S4.1.2 — CI runs on every PR
 
@@ -504,58 +519,26 @@ with CPython 3.13.15, 8 passed, result shown on the PR. Red: throwaway
 draft PR #5 with one deliberately failing test; the `test` job failed
 (`1 failed, 8 passed`, exit code 1) and the PR showed it as failing. PR #5
 was closed without merging and its branch deleted. A red check doesn't
-block merging unless `main` is protected (`13-git-workflow.md`, optional).
+block merging unless `main` is protected (the standard's `git.md`, optional).
 
 ---
+
+## Non-functional requirements
+
+| ID | Category | Requirement (measurable) | How verified | Status |
+|---|---|---|---|---|
+| NFR1 | Performance | The 5 sample pages (`samples/`) finish in under 60 s on this machine with the local engine | Timed CLI run in S2.2.3, each phase end | Not met yet |
+| NFR2 | Security | No known high-severity vulnerabilities in dependencies | Dependency audit + Dependabot, each phase end (`security.md`) | Met (2026-10-11): `pip-audit` clean after upgrading the venv's pip; Dependabot alerts are off for the repo |
+| NFR3 | Accessibility | The local web UI meets the "Apps and websites" checklist in `accessibility.md` (WCAG 2.2 AA, where the UI library allows) | Manual pass per `accessibility.md` | Not met yet |
+| NFR4 | Reliability | One bad input file never stops a run: it is reported as an error and the other pages still finish | Test in S1.1.5 + manual run with a corrupt file | Not met yet: tests pass through `run_pipeline()` and the CLI (2026-10-11); manual run waits for a real backend (Phase 2) |
+| NFR5 | Privacy | OCR runs fully offline (no network calls), and document text is never logged above DEBUG | Tests in S1.2.2 / S2.2.2 + review of logs | Not met yet: no network code or library since S1.1.2, log test passes (2026-10-11); local engine checked in S2.2.2 |
+| NFR6 | Cost | Monthly spend $0: free, local tools only (`budget.md`) | Monthly log in `budget.md` | Met (2026-10-11): $0 so far, free tools only, public repo so Actions is free; monthly log starts 2026-11 |
+
+**Statuses:** `Not met yet` · `Met` (with date last verified) · `At risk`
 
 ## Bugs
 
-Bugs found in finished work. Each one gets a regression test before it's
-fixed (`07-testing-checklist.md` → Bugs). Small bugs found while a story is
-still in progress are just part of that story.
+None logged yet.
 
 | ID | Title | Found in | Severity | Status | Test |
 |---|---|---|---|---|---|
-| B1 | <what's wrong, in one line> | <story/feature ID> | High / Medium / Low | Open | <test name> |
-
-**Statuses:** `Open` → `In progress` → `Fixed` · or `Won't fix` (with a
-reason in Notes)
-
-### B1 — <Bug title>
-
-**Steps to reproduce:**
-1. <...>
-
-**Expected:** <what should happen>
-**Actual:** <what happens instead>
-**Notes:** <cause once found, related decisions>
-
----
-
-## Template for new items
-
-```
-## E<n> — <Epic title>
-
-**Goal:** <outcome>
-**Serves:** <G-IDs from 00-vision.md>
-**Out of scope:** <exclusions>
-
-### F<n>.<m> — <Feature title>
-
-**Description:** <what it adds>
-**Phase:** <n>
-**Depends on:** <IDs or "none">
-**Done when:** <end-to-end demo>
-
-#### S<n>.<m>.<k> — <Story title>
-
-**Story:** As a <user>, I want <capability>, so that <benefit>.
-**Component:** <folder>
-**Status:** Backlog
-
-**Acceptance criteria:**
-- [ ] Given <state>, when <action>, then <result>
-
-**Notes:** <optional>
-```

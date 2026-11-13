@@ -33,7 +33,7 @@ def get_backend(name: str) -> OCRBackend:
     if not BACKENDS:
         raise ValueError(
             "No OCR backend installed. A free local engine is planned "
-            "(see docs/04-project-plan.md, Phase 2); until then the pipeline "
+            "(see docs/requirements.md, Phases: Phase 2); until then the pipeline "
             "can only run with a backend you add to BACKENDS in ocr_pipeline/backend.py."
         )
     if name not in BACKENDS:
