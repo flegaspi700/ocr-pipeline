@@ -6,7 +6,7 @@ per-page text as JSON or CSV: it rasterizes PDF pages, preprocesses each page
 the results.
 
 **Status:** no OCR backend is installed yet. A free local engine is planned
-(Phase 2 in `docs/04-project-plan.md`); until then `ocr-pipeline` stops with
+(Phase 2 in `docs/requirements.md` → Phases); until then `ocr-pipeline` stops with
 "No OCR backend installed".
 
 
@@ -18,4 +18,4 @@ backends (a free local engine first), tested locally and in CI.
 **Out (for now):** a hosted service or full desktop app, cloud backends, model training, layout
 reconstruction, handwriting tuning.
 
-See `docs/00-vision.md` for goals and `docs/` for the full project docs.
+See `docs/requirements.md` for the vision, goals and phases, and `docs/` for the rest. The project follows the [PMO project standard](https://github.com/flegaspi700/pmo-project-standardization/tree/v2.0.0/standard); AI agents start with `AGENTS.md`.

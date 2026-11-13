@@ -1,32 +1,8 @@
 # Architecture
 
-## Diagrams in this doc
+Diagram rules: the standard's `decisions.md` → Architecture docs and
+diagrams. Diagrams must match the code: update them in the same change.
 
-Diagrams are written in **Mermaid** — plain text that renders as a picture
-on GitHub and in VS Code (with the "Markdown Preview Mermaid Support"
-extension). Being text, they live next to the docs they illustrate and
-AI agents can update them in the same change as the code.
-
-Zoom levels follow the **C4 model**: start wide, then zoom in.
-
-| Diagram | Shows | Include |
-|---|---|---|
-| **System context** | The system as one box, the people who use it, and the external systems it talks to | Always |
-| **Components** | The parts inside the system and the data passed between them | Always |
-| **Sequence** | The order of calls/messages in one important flow | When a flow has several steps across components, or timing matters |
-| **State** | The states something moves through, and what triggers each change | When something has modes (e.g. menu → playing → game over, draft → published) |
-| **Data model** | Stored data: entities, fields, relationships | When the project stores data (files or database) |
-
-Rules:
-- Delete the example diagrams that don't apply — don't leave empty ones.
-- Keep each diagram small: around 10 boxes at most. If it's bigger, split
-  it or zoom out a level.
-- Label arrows with *what* moves along them (data, call, event).
-- **Diagrams must match the code.** Update them in the same change that
-  alters components, interfaces, flows, states, or stored data. A wrong
-  diagram is worse than none.
-- Use plain words in labels — avoid `<`, `>`, and quotes inside labels;
-  they can break rendering.
 
 ## Overview
 
@@ -159,39 +135,17 @@ every run is byte-identical. `python scripts/make_samples.py` writes to
 - **backend → pipeline:** `list[Line]`, in reading order.
 - **cli → export:** `list[PageResult]`, one per page.
 
-## Design options and trade-offs
+## Design decisions
 
-Most design choices are small and easy to change later — just pick the
-simplest option and move on. A choice gets a **formal comparison** when any
-of these is true:
+How significant choices are made: the standard's `decisions.md`. Full
+entries are in `decisions.md`.
 
-- it's hard or expensive to reverse (data format, language, storage,
-  framework, an external service)
-- it affects more than one component, or the interfaces between them
-- there are two or more genuinely viable options and the right one isn't
-  obvious
-
-For those, the process is:
-
-1. **List the options** — usually 2-3, always including the simplest one
-   that could work.
-2. **Compare them** against criteria that come from `00-vision.md` (goals,
-   constraints) — e.g. simplicity, effort, performance, cost, how easy it
-   is to change later, fit with skills you have.
-3. **Recommend one**, with the trade-off you'd be accepting.
-4. **The user decides.** Log the full comparison and the decision in
-   `05-decisions-log.md` (its template has the options table).
-5. **Summarise it here** in the table below, and update the design sections
-   above to match.
 
 ### Open design questions
 
-Choices that need a comparison but haven't been decided yet. Each should
-also exist as a `Proposed` entry in `05-decisions-log.md`.
-
 - Which local OCR engine: Tesseract, RapidOCR or EasyOCR? → decide in
   S2.2.1 (engine spike, Phase 2). Recorded as open in
-  `05-decisions-log.md` → 2026-10-10 Next direction.
+  `decisions.md` → 2026-10-10 Next direction.
 - Which UI library: Streamlit or Gradio? → decide at the start of Phase 3.
   Same decision entry.
 
@@ -202,12 +156,90 @@ rejected options and reasoning are in the linked log entry.
 
 | Area | Chosen | Main alternative rejected | Trade-off accepted | Decision |
 |---|---|---|---|---|
-| Direction | Clean core + simple local UI (Option B) | Rewrite as a web app | UI library and accessibility work added | `05-decisions-log.md` → 2026-10-10 Next direction |
-| Phase order / backend | Refactor first; Baidu removed; local engine next | Working pipeline first; keep Baidu | No real OCR until Phase 2 | `05-decisions-log.md` → 2026-10-10 Phase order changed |
-| Formatter and linter | Ruff (format + lint) | Black + Flake8 | A younger tool | `05-decisions-log.md` → 2026-10-11 Formatter, linter and test runner |
-| Coverage and audit | `pytest-cov` + `pip-audit`, phase end only | Dependabot only, no coverage | Two more dev tools | `05-decisions-log.md` → 2026-10-11 Coverage and dependency audit tools |
+| Direction | Clean core + simple local UI (Option B) | Rewrite as a web app | UI library and accessibility work added | `decisions.md` → 2026-10-10 Next direction |
+| Phase order / backend | Refactor first; Baidu removed; local engine next | Working pipeline first; keep Baidu | No real OCR until Phase 2 | `decisions.md` → 2026-10-10 Phase order changed |
+| Formatter and linter | Ruff (format + lint) | Black + Flake8 | A younger tool | `decisions.md` → 2026-10-11 Formatter, linter and test runner |
+| Coverage and audit | `pytest-cov` + `pip-audit`, phase end only | Dependabot only, no coverage | Two more dev tools | `decisions.md` → 2026-10-11 Coverage and dependency audit tools |
 
 ## Non-goals
 
 - No hosted service, full desktop app, model training, layout reconstruction, or
-  handwriting tuning in this version — see `00-vision.md` → Non-goals.
+  handwriting tuning in this version — see `requirements.md` → Non-goals.
+
+## Tech stack
+
+Every dependency appears here with a reason. Adding one needs a logged
+decision first (the standard's `security.md` → Dependencies).
+
+### Core
+
+Existing stack, recorded as found in the repo (see `decisions.md` →
+"Existing stack, kept as is").
+
+| Layer | Choice | Rationale |
+|---|---|---|
+| Language | Python 3.11+ (`requires-python = ">=3.11"`; CI on 3.13) | Existing code |
+| Packaging | setuptools via `pyproject.toml`, `src/` layout, console script `ocr-pipeline` | Existing code |
+| CLI | `argparse` (standard library) | No extra dependency |
+| PDF rasterization | PyMuPDF (`fitz`) ≥ 1.22 | Renders PDF pages to images at a chosen DPI |
+| Image preprocessing | Pillow ≥ 10.1 | Resize, grayscale, binarize; draws the sample documents (10.1 for the bundled scalable default font) |
+| OCR backend | None yet — backend registry in `backend.py` (S1.1.2); a free local engine comes in Phase 2 | Baidu removed (`decisions.md` → Phase order changed) |
+| Export | `json`, `csv` (standard library) | No extra dependency |
+| Persistence | None — output files only | Batch tool, no state between runs |
+
+### Dev environment
+
+| Tool | Purpose |
+|---|---|
+| Ruff | Formatting (`ruff format`, Black-compatible) and linting (`ruff check`: defaults + import sorting); config in `pyproject.toml` → `[tool.ruff]`. No type checker yet |
+| pytest | Tests (`tests/`, a fake backend registered with `monkeypatch`) |
+| pytest-cov | Coverage report (a hint, no target %): `pytest --cov=ocr_pipeline --cov-report=term-missing`; phase end, local only |
+| pip-audit | Known vulnerabilities in the venv's installed packages (`security.md`); phase end, local only |
+| venv (`.venv/`, git-ignored) | Dependency isolation |
+| GitHub Actions (`.github/workflows/python.yml`) | CI: `pip install -e .`, then `pytest`, `ruff check .` and `ruff format --check .` on windows-latest, Python 3.13, on push/PR to `main` |
+
+**Local setup (verified 2026-10-10, S4.1.1):** `python -m venv .venv` with
+Python 3.13, then `pip install -e .` and `pip install pytest ruff==0.17.0 pytest-cov==7.1.0 pip-audit==2.10.1`
+inside it. No
+machine setting was needed: no pip config, proxy, or custom certificates.
+The earlier `SSLV3_ALERT_HANDSHAKE_FAILURE` from `files.pythonhosted.org`
+(`review_notes.md`) no longer reproduces, even with `--no-cache-dir`; it
+was most likely a network-side issue at the time. If it comes back, check
+the network/proxy and the Python version first. Never work around it with
+`--trusted-host` or by turning off certificate verification.
+
+### Starting dependencies
+
+```
+Pillow>=10.1.0
+PyMuPDF>=1.22.0
+```
+
+(`requests` was removed with the Baidu backend in S1.1.2.)
+
+Dev: `pytest` and `ruff==0.17.0` (pinned so local and CI format the same), installed separately locally and in CI; `pytest-cov==7.1.0` and `pip-audit==2.10.1`, local only for phase-end checks. None are declared in `pyproject.toml`.
+
+### Deferred / not needed yet
+
+- A local OCR backend — chosen in the S2.2.1 spike (Tesseract vs RapidOCR)
+- OpenCV — only if `deskew` (currently a placeholder) needs it
+
+## Words and names
+
+Use these terms in code names, docs and replies. When a new concept comes
+in, add it here in the same change. **Use instead of** lists the synonyms
+ruled out: if one shows up in code or docs, rename it.
+
+| Term | Meaning | Use instead of |
+|---|---|---|
+| backend | An OCR engine behind the common interface: takes one page image, returns its lines of text with confidence. | "engine" (in code), "provider", "OCR service" |
+| backend registry | The name → backend lookup used by `get_backend()`; adding a backend means registering it here. | "factory", "plugin list" |
+| confidence | The backend's score (0–1) for how sure it is of a line's text. In CSV, the mean over a page's lines. | "score", "probability" |
+| known text | The text a sample document really contains, saved next to it as `.txt`, used to judge OCR output. | "ground truth", "expected text", "answer key" |
+| line | One line of recognized text on a page, with its confidence. | "result", "item", "block" |
+| page | One image sent to OCR: an image file, or one rasterized page of a PDF. Numbered from 1. | "frame", "sheet" |
+| page result | The `PageResult` for one page: source file, page number, text, lines, and error (if it failed). A file that fails to load gets one page result with no page number. | "result dict", "record", "output" |
+| run | One call of `run_pipeline()` (or the CLI / UI) over a set of input files and folders. | "job", "batch", "session" |
+| sample document | A generated file in `samples/` with no real personal data, used to test and judge OCR. | "fixture", "test doc" |
+| skip-and-report | When a file or page fails, record the error in its page result, log a warning, and keep going. | "fail-soft", "continue on error" |
+| source file | The input file a page came from (image or PDF), as given by the user or found in a folder. | "input path", "origin" |
