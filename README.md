@@ -18,4 +18,4 @@ backends (a free local engine first), tested locally and in CI.
 **Out (for now):** a hosted service or full desktop app, cloud backends, model training, layout
 reconstruction, handwriting tuning.
 
-See `docs/requirements.md` for the vision, goals and phases, and `docs/` for the rest. The project follows the [PMO project standard](https://github.com/flegaspi700/pmo-project-standardization/tree/v2.2.0/standard); AI agents start with `AGENTS.md`.
+See `docs/requirements.md` for the vision, goals and phases, and `docs/` for the rest. The project follows the [PMO project standard](https://github.com/flegaspi700/pmo-project-standardization/tree/v2.3.0/standard); AI agents start with `AGENTS.md`.
